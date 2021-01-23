@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { auth, db } from "../services/firebase";
+import Header from "../components/header";
 
 export default class Profile extends Component {
   constructor() {
@@ -13,15 +14,16 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <div>
-          <h1> PROFILE </h1>
         <div>
-          Login in as: <strong>{this.state.user.email}</strong>
+            <Header/>
+            <h1> PROFILE </h1>
+          <div>
+            Login in as: <strong>{this.state.user.email}</strong>
+          </div>
+          <div>
+            <button onClick={() => auth().signOut()}>Logout</button>
+          </div>
         </div>
-        <div>
-          <button onClick={() => auth().signOut()}>Logout</button>
-        </div>
-      </div>
     );
   }
 }
