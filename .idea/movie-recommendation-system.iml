@@ -12,7 +12,7 @@
   <component name="TemplatesService">
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/backend/movie-recommendation-react/node_modules/workbox-build/src/templates" />
+        <option value="$MODULE_DIR$/backend/movie-recommendation-react/node_modules/mdbootstrap/exclusive-templates" />
       </list>
     </option>
   </component>

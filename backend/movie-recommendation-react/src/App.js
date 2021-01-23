@@ -6,9 +6,10 @@ import {
   Redirect,
 } from "react-router-dom";
 import Home from './pages/home';
-import Profile from './pages/profile';
+import Main from './pages/main';
 import Signup from './pages/signup';
 import Login from './pages/login';
+import Profile from './pages/profile';
 import { auth } from './services/firebase';
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
@@ -28,7 +29,7 @@ function PublicRoute({ component: Component, authenticated, ...rest }) {
       {...rest}
       render={(props) => authenticated === false
         ? <Component {...props} />
-        : <Redirect to='/profile' />}
+        : <Redirect to='/main' />}
     />
   )
 }
@@ -64,6 +65,7 @@ class App extends Component {
       <Router>
         <Switch>
           <Route exact path="/" component={Home}/>
+          <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
           <PrivateRoute path="/profile" authenticated={this.state.authenticated} component={Profile}/>
           <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
           <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
