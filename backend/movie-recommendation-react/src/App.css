@@ -169,3 +169,284 @@
 .card:hover .card-overlay {
     opacity: 1;
   }
+
+.star{
+  color: goldenrod;
+  font-size: 1.3rem;
+  padding: 0 .1rem; /* space out the stars */
+}
+.star::before{
+  content: '\2606';
+  cursor: pointer;
+}
+.star:hover::before{
+  /* the :hover should come first */
+  content: '\2605';
+  color: #bada55;
+}
+.star.rated::before{
+  /* the :hover should come first */
+  content: '\2605';
+}
+
+/*!* Movie details page css *!*/
+/*.movie-card1 {*/
+/*  font: 14px/22px "Lato", Arial, sans-serif;*/
+/*  color: #646262;*/
+/*  padding: 40px 0;*/
+/*}*/
+
+/*.movie-card1.container {*/
+/*  margin: 0 auto;*/
+/*  width: 780px;*/
+/*  height: 640px;*/
+/*  background: #F0F0ED;*/
+/*  border-radius: 5px;*/
+/*  position: relative;*/
+/*}*/
+
+/*.movie-card1.hero {*/
+/*  height: 342px;*/
+/*  margin:0;*/
+/*  position: relative;*/
+/*  overflow: hidden;*/
+/*  z-index:1;*/
+/*  border-top-left-radius: 5px;*/
+/*  border-top-right-radius: 5px;*/
+
+/*}*/
+
+/*.movie-card1.hero:before {*/
+/*  content:'';*/
+/*  width:100%; height:100%;*/
+/*  position:absolute;*/
+/*  overflow: hidden;*/
+/*  top:0; left:0;*/
+/*  background:red;*/
+/*  z-index:-1;*/
+
+/*  transform: skewY(-2.2deg);*/
+/*  transform-origin:0 0;*/
+
+
+/*}*/
+
+/*.movie-card1.cover {*/
+/*  position: absolute;*/
+/*  top: 160px;*/
+/*  left: 40px;*/
+/*    height: 100px;*/
+/*    width: 70px;*/
+/*  z-index: 2;*/
+/*}*/
+
+/*.movie-card1.details1 {*/
+
+/*    padding: 190px 0 0 280px;*/
+/*}*/
+
+
+/*.movie-card1.details.title1 {*/
+/*    color: white;*/
+/*    font-size: 44px;*/
+/*    margin-bottom: 13px;*/
+/*    position: relative;*/
+/*}*/
+
+/*.movie-card1 span {*/
+/*    position: absolute;*/
+/*    top: 3px;*/
+/*    margin-left: 12px;*/
+/*    background: #C4AF3D;*/
+/*    border-radius: 5px;*/
+/*    color: #544C21;*/
+/*    font-size: 14px;*/
+/*    padding: 0px 4px;*/
+
+/*}*/
+
+
+/*.movie-card1.details.title2 {*/
+/*    color: #C7C1BA;*/
+/*    font-size: 23px;*/
+/*    font-weight: 300;*/
+/*    margin-bottom: 15px;*/
+/*}*/
+
+/*.movie-card1.description {*/
+
+/*  bottom: 0px;*/
+/*  height: 200px;*/
+/*  font-size: 16px;*/
+/*  line-height: 26px;*/
+/*  color: #B1B0AC;*/
+
+/*}*/
+
+/*.movie-card1.column1 {*/
+/*  padding-left: 50px;*/
+/*  padding-top: 120px;*/
+/*  width: 220px;*/
+/*  float: left;*/
+/*  text-align: center;*/
+/*}*/
+
+/*.movie-card1.tag {*/
+/*  background: white;*/
+/*  border-radius: 10px;*/
+/*  padding: 3px 8px;*/
+/*  font-size: 14px;*/
+/*  margin-right: 4px;*/
+/*  line-height: 35px;*/
+/*  cursor: pointer;*/
+/*}*/
+
+/*.movie-card1.tag:hover {*/
+/*  background: #ddd;*/
+/*}*/
+
+/*.movie-card1.column2 {*/
+/*  padding-left: 41px;*/
+/*  padding-top: 30px;*/
+/*  margin-left: 20px;*/
+/*  width: 480px;*/
+/*  float: left;*/
+/*}*/
+
+/* new movie details css */
+
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,700);
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+
+/*.movie-card1 {*/
+/*  font: 14px/22px "Lato", Arial, sans-serif;*/
+/*  color: #e5c30e;*/
+/*  padding: 40px 0;*/
+/*}*/
+
+.container-movie-details {
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 5px;
+  position: relative;
+}
+
+.hero {
+  height: 342px;
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+/*.hero:before {*/
+/*  content: "";*/
+/*  width: 100%;*/
+/*  height: 100%;*/
+/*  position: absolute;*/
+/*  overflow: hidden;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  background: red;*/
+/*  z-index: -1;*/
+/*  transform: skewY(-2.2deg);*/
+/*  transform-origin: 0 0;*/
+/*  -webkit-backface-visibility: hidden;*/
+/*}*/
+
+.cover {
+  position: absolute;
+  top: 200px;
+  left: 40px;
+  z-index: 2;
+    height:300px;
+    width: 200px;
+}
+
+.details1 {
+  padding: 150px 0 0 280px;
+}
+.details1 .title1 {
+  color: white;
+  font-size: 44px;
+  margin-bottom: 9px;
+  position: relative;
+}
+.details1 .title1 span {
+  position: absolute;
+  top: 7px;
+  margin-left: 12px;
+  background: #302e2e;
+  border-radius: 5px;
+  color: #d0c0c0;
+  font-size: 14px;
+  padding: 0px 4px;
+}
+.details1 .title2 {
+  color: #ffffff;
+    font-family: "Bell MT", serif;
+  font-size: 23px;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+
+.description {
+  bottom: 0px;
+  height: 200px;
+  font-size: 16px;
+  line-height: 26px;
+  color: #B1B0AC;
+}
+
+.tag {
+    top:100px;
+  background: red;
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 14px;
+  margin-right: 4px;
+  line-height: 35px;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background: #ddd;
+}
+
+.column1 {
+
+  padding-left: 50px;
+  padding-top: 120px;
+  width: 220px;
+  float: left;
+  text-align: center;
+}
+
+.column2 {
+  padding-left: 41px;
+  padding-top: 30px;
+  margin-left: 20px;
+    font-size: medium;
+    font-palette: dark;
+  width: 480px;
+  float: left;
+}
+
+.column3 {
+  padding-left: 50px;
+  padding-top: 10px;
+  float: left;
+  text-align: center;
+}
+

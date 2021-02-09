@@ -5,5 +5,6 @@ urlpatterns = [
     path('login', index),
     path('signup', index),
     path('main', index),
-    path('profile', index)
+    path('profile', index),
+    path('movie_details', index)
 ]
