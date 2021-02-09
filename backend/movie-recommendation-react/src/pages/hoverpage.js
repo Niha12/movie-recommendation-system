@@ -1,6 +1,6 @@
 import React, { Component }  from "react";
 import { MDBMask, MDBView, MDBContainer, MDBRow, MDBCol } from "mdbreact";
-
+//NOT USED
 class HoverPage extends Component {
   render() {
     return (
