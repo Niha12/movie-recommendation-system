@@ -18,7 +18,7 @@ const MovieList = (props) => {
                           <Card.Title tag="h5">{movie.title}</Card.Title>
                           <Card.Subtitle tag="h6" className="mb-2 text-muted">{movie.release_date}</Card.Subtitle>
                           <Card.Text>{movie.overview}</Card.Text>
-                          <Rating name = {movie.title}/>
+                          <Rating name = {movie.id}/>
                         </Card.Body>
                     </Card>
                     </div>
