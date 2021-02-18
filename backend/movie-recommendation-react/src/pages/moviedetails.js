@@ -96,7 +96,7 @@ export default class MovieDetails extends Component {
 
                                 <div className="title2">{movie.tagline}</div>
 
-                                <Rating name = {movie.title}/>
+                                <Rating name = {movie.id}/>
 
                             </div>
 

@@ -91,7 +91,7 @@ const CarouselMovies = (props) => {
                                     <Card.Title style={{fontSize:15}}>{movie.title}</Card.Title>
                                     <Card.Subtitle style={{fontSize:12}} className="mb-2 text-muted">{movie.release_date}</Card.Subtitle>
                                     <Card.Text className="truncate">{movie.overview}</Card.Text>
-                                    <Rating name = {movie.title} />
+                                    <Rating name = {movie.id} />
                                     <Link to={{pathname:'/movie_details' ,state:{movie:movie.id}}}>View Details</Link>
                                 </Card.Body>
 
