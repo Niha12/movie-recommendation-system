@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
+
+from .recommendation import MovieRecommendations
 from .serializers import CreateUserSerializer
 
 
@@ -20,6 +22,7 @@ class CreateUserAPIView(CreateAPIView):
         # We create a token than will be used for future auth
         token = Token.objects.create(user=serializer.instance)
         token_data = {"token": token.key}
+
         return Response(
             {**serializer.data, **token_data},
             status=status.HTTP_201_CREATED,
@@ -33,4 +36,34 @@ class LogoutUserAPIView(APIView):
     def get(self, request, format=None):
         # simply delete the token to force a login
         request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            status=status.HTTP_200_OK
+        )
+
+
+class Recommendations(APIView):
+    movieRecommender = MovieRecommendations()
+
+    def get(self, request):
+        # do something with 'GET' method
+        return Response("some data")
+
+    def post(self, request, format=None):
+        data = request.data
+        results = []
+        checkIds = []
+        print(data)
+
+        for item in data['tmdbId']:
+            print(item)
+            results.extend(self.movieRecommender.get_recommendations(item))
+            checkIds.append(item)
+
+        filtered_results = [x for x in results if x not in checkIds]
+        unique_results = set(filtered_results)
+
+        formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
+        print(formatted_results)
+        # formatted_results = "Some data from POST"
+
+        return Response(formatted_results)

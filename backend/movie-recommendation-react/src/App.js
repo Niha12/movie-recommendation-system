@@ -12,6 +12,7 @@ import Login from './pages/login';
 import Profile from './pages/profile';
 import { auth } from './services/firebase';
 import MovieDetails from "./pages/moviedetails";
+import Recommendations from "./pages/recommendations";
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
@@ -69,6 +70,7 @@ class App extends Component {
           <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
           <PrivateRoute path="/profile" authenticated={this.state.authenticated} component={Profile}/>
           <PrivateRoute path="/movie_details" authenticated={this.state.authenticated} component={MovieDetails}/>
+          <PrivateRoute path="/recommendations" authenticated={this.state.authenticated} component={Recommendations}/>
           <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
           <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
         </Switch>

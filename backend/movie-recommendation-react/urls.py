@@ -6,5 +6,6 @@ urlpatterns = [
     path('signup', index),
     path('main', index),
     path('profile', index),
-    path('movie_details', index)
+    path('movie_details', index),
+    path('recommendations', index)
 ]
