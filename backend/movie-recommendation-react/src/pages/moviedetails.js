@@ -73,7 +73,7 @@ export default class MovieDetails extends Component {
 
     // I changed this from will mount to did mount
 
-    componentDidMount() {
+    componentWillMount() {
 
         this.getMovieInformation()
 

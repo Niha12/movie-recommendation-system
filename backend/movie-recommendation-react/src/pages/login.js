@@ -26,22 +26,22 @@ export default class Login extends Component {
     this.setState({ error: '' });
     try {
       await signin(this.state.email, this.state.password);
-        fetch('http://localhost:8000/token-auth/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-        .then(res => res.json())
-        .then(json => {
-          localStorage.setItem('token', json.token);
-          this.setState({
-            logged_in: true,
-            displayed_form: '',
-            username: json.user.username
-          });
-        });
+      //   fetch('/backend/auth/register/', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify(data)
+      // })
+      //   .then(res => res.json())
+      //   .then(json => {
+      //     localStorage.setItem('token', json.token);
+      //     this.setState({
+      //       logged_in: true,
+      //       displayed_form: '',
+      //       username: json.user.username
+      //     });
+      //   });
     } catch (error) {
       this.setState({ error: error.message });
     }

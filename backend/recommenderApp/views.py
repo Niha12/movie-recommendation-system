@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from .recommendation import MovieRecommendations
 from .serializers import CreateUserSerializer
@@ -41,6 +42,21 @@ class LogoutUserAPIView(APIView):
         )
 
 
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
+
+
 class Recommendations(APIView):
     movieRecommender = MovieRecommendations()
 
@@ -50,20 +66,48 @@ class Recommendations(APIView):
 
     def post(self, request, format=None):
         data = request.data
-        results = []
-        checkIds = []
         print(data)
 
-        for item in data['tmdbId']:
-            print(item)
-            results.extend(self.movieRecommender.get_recommendations(item))
-            checkIds.append(item)
+        results, checkIds = self.movieRecommender.get_recommendations(data)
+        filtered_results = []
+        for x in results:
+            if x not in checkIds:
+                filtered_results.append(x)
 
-        filtered_results = [x for x in results if x not in checkIds]
         unique_results = set(filtered_results)
+        print(unique_results)
+        if len(unique_results) > 40:
+            unique_results = unique_results[:40]
 
         formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
         print(formatted_results)
-        # formatted_results = "Some data from POST"
-
         return Response(formatted_results)
+
+
+
+     #
+        # for item in data['tmdbId']:
+        #     print(item)
+        #     result = self.movieRecommender.get_recommendations(item)
+        #     if result != "NAN":
+        #         results[item] = result
+        #         checkIds.append(item)
+        #
+        # print(results)
+        # filtered_results = []
+        # for item in results:
+        #     # print("item: " + str(item))
+        #     # for c in results[item]:
+        #     #     print(c)
+        #     for x in results[item]:
+        #         if x not in checkIds:
+        #             filtered_results.append(x)
+        # print("filtered rsults: " + str(filtered_results))
+        # unique_results = set(filtered_results)
+        # print(unique_results)
+        # if len(unique_results) > 40:
+        #     unique_results = unique_results[:40]
+        #
+        # formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
+        # print(formatted_results)
+        # # formatted_results = "Some data from POST"
