@@ -5,67 +5,28 @@ import firebase from "firebase";
 import {auth} from "../services/firebase";
 
 export default class Recommendations extends Component {
-    constructor(props){
-        super(props);
+
+    constructor(){
+        super();
         this.state = {
             movies:[],
             uuid : auth().currentUser.uid,
-            loading:true
+            loading:true,
+            tmdbIds:[]
         }
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
         this.docRef =firebase.firestore().collection("Users")
                 .doc(this.state.uuid).collection("Ratings")
-        this.tmdbIds=[]
+        // this.setTmdbIds()
+        // this.pickIds()
 
     }
 
-    setTmdbIds() {
-        console.log("Ratings;")
-        let localtmdbIds = []
-        this.docRef.where('rating', "==", 5).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                console.log(doc.data().name)
-                localtmdbIds.push(doc.data().name)
-                // this.setState({tmdbIds:this.state.tmdbIds + doc.data().name})
-            })
-
-
-        })
-
-        this.docRef.where('rating', "==", 4).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                console.log(doc.data().name)
-                localtmdbIds.push(doc.data().name)
-                // this.setState({tmdbIds:this.state.tmdbIds + doc.data().name})
-            })
-
-
-        })
-        console.log(localtmdbIds)
-
-        // this.setState({tmdbIds:localtmdbIds}, function(){
-        //             console.log("ids: " + this.state.tmdbIds)
-        //             this.getRecommendations()
-        //         }
-        //
-        //     )
-
-        return this.pickIds(localtmdbIds)
-
-        // console.log("Hereee: " +this.tmdbIds)
-
-
-
-        // console.log(this.state.tmdbIds)
-
-
-    }
-
-    pickIds(localtmdbIds){
-
+    pickIds = (localtmdbIds) => {
+        console.log("PickIds")
         // if(this.state.tmdbIds.length < 10){
         //     return this.state.tmdbIds
-        // }else if (this.state.tmdbIds.length > 10 && this.state.tmdbIds.length > 30 ){
+        // }else if (this.state.tmdbIds.length > 10 && this.state.tmdbIds.length < 30 ){
         //
         //     return this.state.tmdbIds.slice(0, 10).map(function () {
         //         return this.splice(Math.floor(Math.random() * this.state.tmdbIds.length), 1)[0];
@@ -76,10 +37,9 @@ export default class Recommendations extends Component {
         //         return this.splice(Math.floor(Math.random() * this.state.tmdbIds.length), 1)[0];
         //     }, this.state.tmdbIds.slice())
         // }
-        console.log("In Pick:: " + localtmdbIds)
         if(localtmdbIds.length < 10){
-            return this.tmdbIds
-        }else if (localtmdbIds.length > 10 && localtmdbIds.length > 30 ){
+            return localtmdbIds
+        }else if (localtmdbIds.length > 10 && localtmdbIds.length < 30 ){
 
             return localtmdbIds.slice(0, 10).map(function () {
                 return this.splice(Math.floor(Math.random() * localtmdbIds.length), 1)[0];
@@ -93,13 +53,17 @@ export default class Recommendations extends Component {
 
     }
 
-    getRecommendations(results) {
-        console.log("getRecom Ids: " + results)
+    getRecommendations = (results) => {
         // let results = this.pickIds()
 
+        console.log("getrecom")
+        console.log(this.state.tmdbIds)
+        // let res = results
+        let variab = []
         let bakendUrl = "/backend"
         let backendAPIToken = "Token " + localStorage.getItem("token")
         console.log(backendAPIToken)
+
         fetch(bakendUrl + "/suggestions", {
             method: 'POST',
             headers: {
@@ -107,10 +71,11 @@ export default class Recommendations extends Component {
                 'Authorization': backendAPIToken
             },
             //99861
-            body: JSON.stringify({'tmdbId':[99861]})
+            body: JSON.stringify({'tmdbId':results,'isUpdate':"false"})
         }).then(response => response.json())
             .then(
                 json => {
+                    // console.log(results)
                     this.setState(this.fetchSuggestions([...json.results]))
                     console.log(...json.results)
                     // console.log("ids: "+this.state.tmdbIds)
@@ -123,7 +88,8 @@ export default class Recommendations extends Component {
     }
 
     fetchSuggestions = (results) => {
-        console.log("results: " + results)
+        console.log("results: ")
+        console.log(results)
         let recommendations = [];
         const pushes = [];
         for (let item in results){
@@ -140,32 +106,54 @@ export default class Recommendations extends Component {
 
         }
 
+        let newrecommendations = []
         Promise.all(pushes).then(()=>{
-            console.log(recommendations)
-            let newrecommendations = []
             for (let item in recommendations){
-                // console.log(item)
-                // console.log(recommendations[item])
                 if (!("success" in recommendations[item])){
                     newrecommendations.push(recommendations[item])
-                    console.log(newrecommendations)
                 }
             }
             this.setState({movies:newrecommendations})
+        })
+        // return newrecommendations
+    }
+    async componentWillMount() {
+        let localtmdbIds = []
+        await this.docRef.where('rating', "==", 5).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                console.log("1")
+                console.log(doc.data().name)
+                console.log(typeof doc.data().name)
+                localtmdbIds.push(doc.data().name)
+            })
+
 
         })
-    }
-    componentWillMount() {
-        let results = this.setTmdbIds()
-        console.log("In Component: "+results)
+
+        await this.docRef.where('rating', "==", 4).get().then(snapshot => {
+            snapshot.forEach(doc => {
+                console.log("2")
+                console.log(doc.data().name)
+                localtmdbIds.push(doc.data().name)
+            })
+
+
+        })
+
+        let results = this.pickIds(localtmdbIds)
         this.getRecommendations(results)
+
+
     }
 
     render() {
-        return this.state.loading === true ? <h2>Generating your recommendations...</h2> : (
+
+        return(
             <div>
                 <Header/>
+                {/*{this.state.loading === true ? <h2>Generating your recommendations...</h2> :*/}
                 <MovieList movies={this.state.movies}/>
+                {/*}*/}
             </div>
         )
     }

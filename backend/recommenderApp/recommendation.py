@@ -1,40 +1,34 @@
+from datetime import time
+from shutil import copyfile
+
 import pandas as pd
 import joblib
-from scipy.sparse import load_npz
+from scipy.sparse import load_npz, csr_matrix
 import numpy as np
 
 
 class MovieRecommendations:
     def __init__(self):
 
-        # self.links = []
-        # with open('../backend/ml-25m/links.csv', 'r') as file:
-        #     reader = csv.reader(file)
-        #     for row in reader:
-        #         self.links.append(row)
+        # def load_sparse_csr(filename):
+        #     loader = np.load(filename)
+        #     return csr_matrix((loader['data'], loader['indices'], loader['indptr']),
+        #                       shape=loader['shape'])
         self.hashmap = np.load('../backend/ml-25m/movie_tmdb_map.npy', allow_pickle='TRUE').item()
         self.matrix = load_npz('../backend/ml-25m/sparse_matrix.npz')
         self.model = joblib.load('../backend/ml-25m/knnModel.pkl')
-        # print(self.hashmap)
+        self.path_ratings_src = "../backend/ml-25m/ratings-new.csv"
+        self.path_ratings_dest = "../backend/ml-25m/ratings.csv"
+        copyfile(self.path_ratings_dest, self.path_ratings_src)
+        # print(self.matrix)
 
     def get_movie_index(self, tmdb_id):
 
         if tmdb_id in self.hashmap:
             movie = self.hashmap[tmdb_id]
             print(movie)
-            return movie + 1
+            return movie
         return "NAN"
-
-    # def get_tmdb_ids(self, movie_indexes):
-    #     tmdb_ids = []
-    #     print("movie indexes: "+str(movie_indexes))
-    #     for i in movie_indexes[0]:
-    #         if i != 0:
-    #             tmdb_id = int(self.links.loc[self.links.movieId == i, 'tmdbId'].iloc[0])
-    #             tmdb_ids.append(tmdb_id)
-    #
-    #     print(tmdb_ids)
-    #     return tmdb_ids
 
     def get_recommendations(self, data):
         results = {}
@@ -44,13 +38,15 @@ class MovieRecommendations:
             movie_index = self.get_movie_index(item)
             checkIds.append(item)
             if movie_index != 'NAN':
-                distances, indexes = self.model.kneighbors(self.matrix[movie_index], n_neighbors=11)
+                movie = self.matrix[movie_index]
+                print(self.matrix[36])
+                distances, indexes = self.model.kneighbors(movie, n_neighbors=11)
                 # tmdb_ids = self.get_tmdb_ids(indexes)
                 reverse_map = {v: k for k, v in self.hashmap.items()}
                 # print(reverse_map)
                 rec_movie_indices = sorted(list(zip(indexes.squeeze().tolist(), distances.squeeze().tolist())),
                                            key=lambda x: x[1], reverse=True)[:0:-1]
-
+                print("results: " + str(rec_movie_indices))
                 for val in rec_movie_indices:
                     if reverse_map[val[0]] in results:
                         if val[1] < results[reverse_map[val[0]]]:
@@ -60,7 +56,11 @@ class MovieRecommendations:
         results = dict((sorted(results.items(), key=lambda x: x[1])))
         print(results)
 
-
         return results, checkIds
 
-        # return "NAN"
+    def update_model(self, data):
+        movieId = self.get_movie_index(data[1])
+        with open(self.path_ratings_src, 'a') as fd:
+            fd.write(str(data[0]+'A')+','+str(movieId)+','+str(data[2])+','+str(time())+ '\n')
+
+

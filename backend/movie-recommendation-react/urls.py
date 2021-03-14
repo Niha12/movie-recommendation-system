@@ -7,5 +7,8 @@ urlpatterns = [
     path('main', index),
     path('profile', index),
     path('movie_details', index),
-    path('recommendations', index)
+    path('recommendations', index),
+    path('watchlater', index),
+    path('genres', index)
+
 ]

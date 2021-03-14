@@ -28,6 +28,7 @@ export default class SimpleRating extends Component {
 
 
     storeRating(newValue){
+        let today = new Date().toISOString().slice(0,10)
         const rating : Rating = {
             name: this.state.name,
             rating: newValue
@@ -35,12 +36,26 @@ export default class SimpleRating extends Component {
 
         this.docRef.where('name',"==", this.state.name).limit(1).get().then(snapshot => {
             if(snapshot.empty){
-                // console.log("Nothing found")
+                console.log("Nothing found")
                 this.docRef.add(rating)
             }else{
                 snapshot.docs[0].ref.update(rating)
             }
         })
+
+        let values =[this.state.uuid,this.state.name,newValue]
+        let bakendUrl = "/backend"
+        let backendAPIToken = "Token " + localStorage.getItem("token")
+
+        fetch(bakendUrl + "/suggestions", {
+            method: 'POST',
+            headers: {
+                'content-Type': 'application/json',
+                'Authorization': backendAPIToken
+            },
+            body: JSON.stringify({'values':values,'isUpdate':"true"})
+        })
+            .catch(err => console.error(err))
     }
 
     componentWillMount() {

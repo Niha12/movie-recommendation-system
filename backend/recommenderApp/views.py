@@ -67,47 +67,22 @@ class Recommendations(APIView):
     def post(self, request, format=None):
         data = request.data
         print(data)
+        if data["isUpdate"] == "true":
+            self.movieRecommender.update_model(data["values"])
+            return Response("Updated")
+        else:
+            results, checkIds = self.movieRecommender.get_recommendations(data)
+            filtered_results = []
+            for x in results:
+                if x not in checkIds:
+                    filtered_results.append(x)
 
-        results, checkIds = self.movieRecommender.get_recommendations(data)
-        filtered_results = []
-        for x in results:
-            if x not in checkIds:
-                filtered_results.append(x)
+            unique_results = set(filtered_results)
+            # print(unique_results)
+            if len(unique_results) > 40:
+                unique_results = unique_results[:40]
 
-        unique_results = set(filtered_results)
-        print(unique_results)
-        if len(unique_results) > 40:
-            unique_results = unique_results[:40]
+            formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
+            print(formatted_results)
+            return Response(formatted_results)
 
-        formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
-        print(formatted_results)
-        return Response(formatted_results)
-
-
-
-     #
-        # for item in data['tmdbId']:
-        #     print(item)
-        #     result = self.movieRecommender.get_recommendations(item)
-        #     if result != "NAN":
-        #         results[item] = result
-        #         checkIds.append(item)
-        #
-        # print(results)
-        # filtered_results = []
-        # for item in results:
-        #     # print("item: " + str(item))
-        #     # for c in results[item]:
-        #     #     print(c)
-        #     for x in results[item]:
-        #         if x not in checkIds:
-        #             filtered_results.append(x)
-        # print("filtered rsults: " + str(filtered_results))
-        # unique_results = set(filtered_results)
-        # print(unique_results)
-        # if len(unique_results) > 40:
-        #     unique_results = unique_results[:40]
-        #
-        # formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
-        # print(formatted_results)
-        # # formatted_results = "Some data from POST"
