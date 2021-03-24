@@ -5,7 +5,7 @@ import styles from "./../App.css"
 import CarouselMovies from "./carouselmovies";
 import Parser from 'html-react-parser';
 import {Link} from "react-router-dom";
-import {Card} from "react-bootstrap";
+import image from "./../images/no-image-found.png"
 
 export default class MovieDetails extends Component {
 
@@ -102,21 +102,6 @@ export default class MovieDetails extends Component {
 
     }
 
-    setCast(){
-        let cast1 = ""
-        this.state.cast.forEach((cast => {
-            console.log(cast.name)
-            cast1 = cast1 + "<Link to={{pathname:\"/cast/\""+cast.id+",state:{movie:"+cast.id+"}}}>"+cast.name+"</Link>"
-
-                // "<Link to =+"+ cast.id +", state:{cast:"+cast.id+"} >"
-
-
-            //state:{movie:movie.id}}}>View Details</Link>
-        }))
-
-        return cast1
-    }
-
     async componentDidUpdate(prevProps, prevState) {
         if(this.props.location.state.movie !== prevProps.location.state.movie){
             await this.setState({movieID: this.props.location.state.movie})
@@ -132,10 +117,7 @@ export default class MovieDetails extends Component {
                 <div style={{styles}}>
                     {this.state.movieInfo.map((movie) => (
                     <div className="container-movie-details">
-                        {/*<div className="image1">*/}
-                            <div className="hero" style={{backgroundImage: "url(https://image.tmdb.org/t/p/w500/"+ movie.backdrop_path + ")"}}>
-
-
+                        <div className="hero" style={{backgroundImage: "url(https://image.tmdb.org/t/p/w500/"+ movie.backdrop_path + ")"}}>
 
                             <div className="details1">
 
@@ -146,17 +128,18 @@ export default class MovieDetails extends Component {
                                 <Rating name = {movie.id} year={movie.release_date}/>
 
                             </div>
-                                </div>
-
-
-                            {/*</div>*/}
-
+                        </div>
                         <div className="description">
 
                             <div className="column1" style={{marginTop:"50px"}}>
-
-                                <img src={"https://image.tmdb.org/t/p/w500/"+movie.poster_path}
+                                {
+                                    movie.poster_path !== null ?
+                                        <img src={"https://image.tmdb.org/t/p/w500/"+movie.poster_path}
                                              alt="cover" className="cover"/>
+                                             :
+                                        <img src={image} alt='cover' className="cover"/>
+                                }
+
                                  <div style={{maxWidth:"200px"}}>
                                     {Parser(this.getMovieGenres(movie.genres))}
                                  </div>
