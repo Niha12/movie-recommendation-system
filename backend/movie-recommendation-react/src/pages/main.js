@@ -7,6 +7,7 @@ import PreferenceElicitation from "./preferenceelicitation";
 import firebase from "firebase";
 import { auth } from "../services/firebase";
 import styles from "./../App.css"
+import App from "../App";
 
 export default class Main extends Component {
     constructor() {
@@ -14,8 +15,7 @@ export default class Main extends Component {
         this.refreshPage = this.refreshPage.bind(this)
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
         this.uuid = auth().currentUser.uid
-        // let val = this.setPref()
-        // val.value = val
+        console.log(this.user)
         this.state = {
             popular:[],
             latest:[],
@@ -27,8 +27,6 @@ export default class Main extends Component {
             isLoaded: false,
             isPref:false
         }
-
-        this.setPref()
         //Maybe change this to be in an .env file to make it private
 
     }
@@ -49,7 +47,7 @@ export default class Main extends Component {
         } else {
             this.setState({isSubmit: true})
         }
-        this.setState({isLoaded:true})
+        // this.setState({isLoaded:true})
 
     }
     // I changed everything to go back to movies:[] instead of each individual
@@ -104,14 +102,6 @@ export default class Main extends Component {
 
     async setPref() {
         let num = 0
-        // await this.docRef.get().then(snapshot => {
-        //     snapshot.forEach(doc => {
-        //         if (doc.data().rating === 4 || doc.data().rating === 5) {
-        //             num = num + 1
-        //
-        //         }
-        //     })
-        // })
         let docRef = firebase.firestore().collection("Users")
             .doc(this.uuid).collection("Ratings")
 
@@ -129,89 +119,61 @@ export default class Main extends Component {
         if (num < 3) {
             await this.setState({isPref: true})
         }
-    }
 
-    // async componentWillMount(){
-    //     let num = 0
-    //     let docRef = firebase.firestore().collection("Users")
-    //             .doc(this.uuid).collection("Ratings")
-    //
-    //     await docRef.where('rating',"==", 4).get().then(snapshot => {
-    //         num = num + snapshot.size
-    //     })
-    //     console.log(num)
-    //     await docRef.where('rating',"==", 5).get().then(snapshot => {
-    //         num = num + snapshot.size
-    //     })
-    //     console.log(num)
-    //     if (num>2){
-    //         await this.setState({isPref:false})
-    //     }else{
-    //         await this.setState({isPref:true})
-    //     }
-    // }
+        this.setState({isLoaded:true})
+    }
 
     async refreshPage() {
         await this.setState({isPref: false})
-        // await this.setState((state, props) => {
-        // return {
-        //   isPref: false
-        // };
-        // });
         console.log("In refresh page")
 
     }
 
+    componentWillMount() {
+        this.setPref()
+    }
+
     render() {
-
-       if(this.state.isPref === true){
-            return(
-                <div style={styles}>
-                    <Header/>
-                    <div className="div">
-                    <PreferenceElicitation refreshPage={this.refreshPage}/>
+        if (this.state.isLoaded === true){
+            if (this.state.isPref === true) {
+                return (
+                    <div style={styles}>
+                        <Header/>
+                        <div className="div">
+                            <PreferenceElicitation refreshPage={this.refreshPage}/>
+                        </div>
                     </div>
-                </div>
-            )
-       }else {
-           return (
-               <div style={styles}>
-                   <Header/>
-                   <div className="div">
+                )
+            } else {
+                return (
+                    <div style={styles}>
+                        <Header/>
+                        <div className="div">
 
-                       <SearchBox handleSubmit={this.handleSubmit} handleChange={this.handleChange}/>
-                       {
-                           this.state.isSubmit === false ?
-                               <div>
-                                   <h1 className="heading">POPULAR MOVIES</h1>
-                                   <CarouselMovies movies={this.getPopularMovies()}/>
-                                   <h1 className="heading">LATEST</h1>
-                                   <CarouselMovies movies={this.getLatestMovies()}/>
-                                   <h1 className="heading">TOP GROSSING FILMS</h1>
-                                   <CarouselMovies movies={this.getBiggestGrossingMovies()}/>
-                               </div>
-                               :
-                               <div>
-                                   <h1 className="heading">You searched {this.state.searchTerm}</h1>
-                                   {/*{*/}
-                                   {/*    this.state.isLoaded === false ?*/}
-                                   {/*        <h2>Loading movies...</h2>*/}
-                                   {/*        :*/}
-                                   <MovieList movies={this.state.movies}/>
-                                   {/*}*/}
-                               </div>
-                       }
-                   </div>
-               </div>
-           )
-       }
+                            <SearchBox handleSubmit={this.handleSubmit} handleChange={this.handleChange}/>
+                            {
+                                this.state.isSubmit === false ?
+                                    <div>
+                                        <h1 className="heading">POPULAR MOVIES</h1>
+                                        <CarouselMovies movies={this.getPopularMovies()}/>
+                                        <h1 className="heading">LATEST</h1>
+                                        <CarouselMovies movies={this.getLatestMovies()}/>
+                                        <h1 className="heading">TOP GROSSING FILMS</h1>
+                                        <CarouselMovies movies={this.getBiggestGrossingMovies()}/>
+                                    </div>
+                                    :
+                                    <div>
+                                        <h1 className="heading">You searched {this.state.searchTerm}</h1>
+                                        <MovieList movies={this.state.movies}/>
+                                    </div>
+                            }
+                        </div>
+                    </div>
+                )
+            }
+        }else{
+            return(<h2>Loading...</h2>)
+        }
     }
 
 }
-
-//
-//   {
-//     (this.state.searchTerm = '') ?
-//         <MovieList movies={this.getPopularMovies()}/>:
-//         <MovieList movies={this.state.movies}/>
-// }

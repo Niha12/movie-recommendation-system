@@ -72,6 +72,8 @@ class App extends Component {
       <Router>
         <Switch>
           <Route exact path="/" component={Home}/>
+          <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
+          <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
           <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
           <PrivateRoute path="/profile/settings" authenticated={this.state.authenticated} component={Settings}/>
           <PrivateRoute path="/profile/ratings" authenticated={this.state.authenticated} component={RatingCharts}/>
@@ -81,8 +83,6 @@ class App extends Component {
           <PrivateRoute path="/watchlater" authenticated={this.state.authenticated} component={WatchLater}/>
           <PrivateRoute path="/ratedmovies" authenticated={this.state.authenticated} component={MoviesRated}/>
           <PrivateRoute path="/genres" authenticated={this.state.authenticated} component={Genres}/>
-          <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
-          <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
         </Switch>
       </Router>
     );

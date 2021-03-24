@@ -6,7 +6,7 @@ import styles from "./../App.css"
 import Rating from "./rating";
 import {Link} from "react-router-dom";
 import WatchLaterButton from "./watchlaterbutton";
-import image from "./../images/no-image-found-2.png"
+import image from "./../images/no-image-found.png"
 
 
 const MovieList = (props) => {
@@ -17,7 +17,7 @@ const MovieList = (props) => {
 
 
             {props.movies.map((movie, index) => (
-                <CardDeck className = "movie-card" style={{alignItems:"center"}}>
+                <CardDeck className = "movie-card">
                     <div>
                         <Card className="movie-list">
                             {
@@ -25,7 +25,7 @@ const MovieList = (props) => {
 
                                 <CardImg className="image" src={"https://image.tmdb.org/t/p/w500/"+movie.poster_path} alt='movie'/>
                                 :
-                                <CardImg className="image" style={{height:"100%", width:"100%"}} src={image} alt='movie'/>
+                                <CardImg style={{height:"100%", width:"100%",display: "inline-block", overflow: "hidden"}} src={image} alt='movie'/>
                             }
                                 <Card.Body className="details">
                                 <Card.Title className = "ellipsis-title" style={{fontSize:15}}>{movie.title}</Card.Title>
