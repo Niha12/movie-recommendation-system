@@ -8,7 +8,9 @@ export default class WatchLaterButton extends Component {
         super(props);
         this.state ={
             isDisabled:false,
-            movie: props.movie
+            movie: props.movie,
+            isWatchLater: props.isWatchLater,
+            isDisabledRemove:false
         }
         let uuid = auth().currentUser.uid
         this.docRef =firebase.firestore().collection("Users")
@@ -31,22 +33,39 @@ export default class WatchLaterButton extends Component {
         this.setState({isDisabled:true})
     }
 
-    async componentWillMount() {
-        console.log("In Watch Later method")
-
+    async componentDidMount() {
         await this.docRef.where('name', "==", this.state.movie).limit(1).get().then(snapshot => {
-            if (!snapshot.empty) {
-                console.log("snapshot:")
-                console.log(snapshot.docs[0].data())
-            }
             this.setState({isDisabled: !snapshot.empty})
         })
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+        if(this.props.movie !== prevProps.movie){
+            await this.setState({movie: this.props.movie})
+            this.componentDidMount()
+        }
+
+    }
+
+    async handleClickRemove(event) {
+        event.preventDefault();
+        await this.docRef.where('name', "==", this.state.movie).limit(1).get().then(snapshot => {
+            snapshot.docs[0].ref.delete()
+        })
+        this.setState({isDisabledRemove:true})
     }
 
     render(){
         return(
             <div>
-                <button className="btn btn-primary" onClick={(e)=>this.handleClick(e)} disabled={this.state.isDisabled}>Watch Later</button>
+                {
+                    this.state.isWatchLater === true?
+                        <button className="watch-later-button" onClick={(event)=>this.handleClickRemove(event)} disabled={this.state.isDisabledRemove}>Remove movie</button>
+                        :
+                        <button  className="watch-later-button" onClick={(e)=>this.handleClick(e)} disabled={this.state.isDisabled}>Watch Later</button>
+
+
+                }
             </div>
         )
 

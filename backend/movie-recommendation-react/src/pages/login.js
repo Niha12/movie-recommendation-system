@@ -49,26 +49,25 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className="container">
-        <form className="mt-5 py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
-          <h1>
-            Login to
-          <Link className="title" to="/">ABC</Link>
-          </h1>
-          <p className="lead">Fill in the form below to login to your account.</p>
-          <div className="form-group">
-            <input className="form-control" placeholder="Email" name="email" type="email" onChange={this.handleChange} value={this.state.email}/>
-          </div>
-          <div className="form-group">
-            <input className="form-control" placeholder="Password" name="password" onChange={this.handleChange} value={this.state.password} type="password"/>
-          </div>
-          <div className="form-group">
-            {this.state.error ? <p className="text-danger">{this.state.error}</p> : null}
-            <button className="btn btn-primary rounded-pill px-5">Login</button>
-          </div>
-          <hr/>
-          <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-        </form>
+      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0}}>
+        <div>
+          <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
+            <h1>Login to <Link className="title" to="/">MovieRec</Link></h1>
+            <p className="lead">Fill in the form below to login to your account.</p>
+            <div className="form-group">
+              <input className="form-control" placeholder="Email" name="email" type="email" onChange={this.handleChange} value={this.state.email}/>
+            </div>
+            <div className="form-group">
+              <input className="form-control" placeholder="Password" name="password" onChange={this.handleChange} value={this.state.password} type="password"/>
+            </div>
+            <div className="form-group">
+              {this.state.error ? <p className="text-danger">{this.state.error}</p> : null}
+              <button className="btn btn-primary rounded-pill px-5">Login</button>
+            </div>
+            <hr/>
+            <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+          </form>
+        </div>
       </div>
     )
   }

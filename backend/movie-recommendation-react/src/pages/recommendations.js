@@ -83,8 +83,6 @@ export default class Recommendations extends Component {
             )
             .catch(err => console.error(err))
 
-        this.setState({loading: false})
-
     }
 
     fetchSuggestions = (results) => {
@@ -115,7 +113,9 @@ export default class Recommendations extends Component {
             }
             this.setState({movies:newrecommendations})
         })
-        // return newrecommendations
+
+
+        this.setState({loading: false})
     }
     async componentWillMount() {
         let localtmdbIds = []
@@ -142,8 +142,6 @@ export default class Recommendations extends Component {
 
         let results = this.pickIds(localtmdbIds)
         this.getRecommendations(results)
-
-
     }
 
     render() {
@@ -151,9 +149,9 @@ export default class Recommendations extends Component {
         return(
             <div>
                 <Header/>
-                {/*{this.state.loading === true ? <h2>Generating your recommendations...</h2> :*/}
-                <MovieList movies={this.state.movies}/>
-                {/*}*/}
+                {this.state.loading === true ? <h2>Generating your recommendations...</h2> :
+                    <MovieList movies={this.state.movies}/>
+                }
             </div>
         )
     }

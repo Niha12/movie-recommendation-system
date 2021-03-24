@@ -6,7 +6,7 @@ export default class Genres extends Component {
     constructor(props){
         super(props);
         this.state={
-            genres:[{"id":28,"name":"Action"},{"id":12,"name":"Adventure"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":18,"name":"Drama"},{"id":10751,"name":"Family"},{"id":14,"name":"Fantasy"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":10402,"name":"Music"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science-Fiction"},{"id":10770,"name":"TV Movie"},{"id":53,"name":"Thriller"},{"id":10752,"name":"War"},{"id":37,"name":"Western"}],
+            genres:[{"id":28,"name":"Action"},{"id":16,"name":"Animation"},{"id":35,"name":"Comedy"},{"id":80,"name":"Crime"},{"id":99,"name":"Documentary"},{"id":10751,"name":"Family"},{"id":36,"name":"History"},{"id":27,"name":"Horror"},{"id":9648,"name":"Mystery"},{"id":10749,"name":"Romance"},{"id":878,"name":"Science-Fiction"},{"id":53,"name":"Thriller"}],
             genreChosen: props.location.hash,
             genreChosenId:0,
             movies: [],
@@ -30,7 +30,7 @@ export default class Genres extends Component {
         console.log(this.state.movies)
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         // console.log(this.state.genreChosen)
         let genre = this.state.genreChosen.split('#')[1]
         let id = 0
@@ -46,21 +46,26 @@ export default class Genres extends Component {
         this.fetchMovies()
         // this.render()
     }
-    //
+
     // shouldComponentUpdate(nextProps){
     //     return this.state.genreChosen !== nextProps.location.hash
     // }
-    //
-    // async componentDidUpdate(props) {
-    //     await this.setState({genreChosen: props.location.hash})
-    //     this.componentWillMount()
-    // }
+
+    async componentDidUpdate(prevProps, prevState) {
+        console.log("prev props: "+prevProps.location.hash)
+        console.log("this props genre: "+this.props.location.hash)
+        if(this.props.location.hash !== prevProps.location.hash){
+            await this.setState({genreChosen: this.props.location.hash})
+            this.componentDidMount()
+        }
+
+    }
 
     render(){
         return (
             <div>
                 <Header/>
-                <h1>GENRES</h1>
+                <h1 className="heading">{this.state.genreChosen.split('#')[1]} movies</h1>
                 {
                     this.state.loading === true?
                         <h2>Loading Movies...</h2>:

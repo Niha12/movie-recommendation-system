@@ -5,10 +5,13 @@ urlpatterns = [
     path('login', index),
     path('signup', index),
     path('main', index),
-    path('profile', index),
+    path('profile/settings', index),
     path('movie_details', index),
+    path('cast', index),
     path('recommendations', index),
     path('watchlater', index),
+    path('profile/ratings', index),
+    path('ratedmovies', index),
     path('genres', index)
 
 ]

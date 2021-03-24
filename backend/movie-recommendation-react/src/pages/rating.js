@@ -11,8 +11,8 @@ export default class SimpleRating extends Component {
         {
             name: props.name,
             uuid : auth().currentUser.uid,
-            rating:0
-
+            rating:0,
+            year: props.year
 
         }
         this.docRef =firebase.firestore().collection("Users")
@@ -29,33 +29,43 @@ export default class SimpleRating extends Component {
 
     storeRating(newValue){
         let today = new Date().toISOString().slice(0,10)
+        console.log(today)
         const rating : Rating = {
             name: this.state.name,
-            rating: newValue
+            release:this.state.year,
+            rating: newValue,
+            date:today
+        }
+        console.log(newValue)
+        if (newValue === null){
+             this.docRef.where('name', "==", this.state.name).limit(1).get().then(snapshot => {
+                    snapshot.docs[0].ref.delete()
+            })
+        }else {
+            this.docRef.where('name', "==", this.state.name).limit(1).get().then(snapshot => {
+                if (snapshot.empty) {
+                    console.log("Nothing found")
+                    this.docRef.add(rating)
+                } else {
+                    snapshot.docs[0].ref.update(rating)
+                }
+            })
+
+
+            let values =[this.state.uuid,this.state.name,newValue]
+            let bakendUrl = "/backend"
+            let backendAPIToken = "Token " + localStorage.getItem("token")
+
+            fetch(bakendUrl + "/suggestions", {
+                method: 'POST',
+                headers: {
+                    'content-Type': 'application/json',
+                    'Authorization': backendAPIToken
+                },
+                body: JSON.stringify({'values':values,'isUpdate':"true"})
+            }).catch(err => console.error(err))
         }
 
-        this.docRef.where('name',"==", this.state.name).limit(1).get().then(snapshot => {
-            if(snapshot.empty){
-                console.log("Nothing found")
-                this.docRef.add(rating)
-            }else{
-                snapshot.docs[0].ref.update(rating)
-            }
-        })
-
-        let values =[this.state.uuid,this.state.name,newValue]
-        let bakendUrl = "/backend"
-        let backendAPIToken = "Token " + localStorage.getItem("token")
-
-        fetch(bakendUrl + "/suggestions", {
-            method: 'POST',
-            headers: {
-                'content-Type': 'application/json',
-                'Authorization': backendAPIToken
-            },
-            body: JSON.stringify({'values':values,'isUpdate':"true"})
-        })
-            .catch(err => console.error(err))
     }
 
     componentWillMount() {
@@ -70,7 +80,7 @@ export default class SimpleRating extends Component {
 
     render() {
         return (
-        <div>
+        <div style={{marginBottom:"-30px"}} onChange={this.props.onChange}>
             <Box component="fieldset" mb={3} borderColor="transparent">
                 <Rating
                 name={this.state.name}
@@ -86,57 +96,3 @@ export default class SimpleRating extends Component {
     }
 
 }
-//
-// const SimpleRating = (props) => {
-//     //
-//     // let uuid = auth().currentUser.uid
-//     //         let docRef =firebase.firestore().collection("Users")
-//     //             .doc(uuid).collection("Ratings")
-//     // const [value, setValue] = React.useState('')
-//
-// //     const [userDetails, setUserDetails] = useState('')
-// //          db.collection('users').doc(id).get()
-// //         .then(snapshot => setUserDetails(snapshot.data()))
-// //    FOR VALUE ^^^
-//
-//     docRef.where('name', "==", props.name).get().then(snapshot => {
-//         if (snapshot.empty) {
-//             setValue(0)
-//         } else {
-//             setValue(snapshot.docs[0].data().rating)
-//         }
-//
-//
-//     function storeRating(newValue){
-//         const rating : Rating = {
-//             name: props.name,
-//             rating: newValue
-//         }
-//
-//         docRef.where('name',"==", props.name).limit(1).get().then(snapshot => {
-//             if(snapshot.empty){
-//                 // console.log("Nothing found")
-//                 docRef.add(rating)
-//             }else{
-//                 snapshot.docs[0].ref.update(rating)
-//             }
-//         })
-//     }
-//
-//     return (
-//         <div>
-//             <Box component="fieldset" mb={3} borderColor="transparent">
-//                 <Rating
-//                 name={props.name}
-//                 value={value}
-//                 onChange={(event, newValue) => {
-//                     setValue(newValue)
-//                     storeRating(newValue)
-//                 }}
-//                 />
-//             </Box>
-//         </div>
-//     );
-// }
-
-// export default SimpleRating;

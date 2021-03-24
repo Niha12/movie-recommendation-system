@@ -57,7 +57,7 @@ export default class SignUp extends Component {
         <form className="mt-5 py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
           <h1>
             Sign Up to
-          <Link className="title" to="/">ABC</Link>
+          <Link className="title" to="/">MovieRec</Link>
           </h1>
           <p className="lead">Fill in the form below to create an account.</p>
           <div className="form-group">

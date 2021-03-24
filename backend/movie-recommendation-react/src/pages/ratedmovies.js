@@ -1,23 +1,24 @@
 import {Component} from "react";
-import MovieList from "./movielist";
-import firebase from "firebase";
 import Header from "../components/header";
+import firebase from "firebase";
 import {auth} from "../services/firebase";
+import MovieList from "./movielist";
 
-export default class WatchLater extends Component {
-    constructor(){
+export default class MoviesRated extends Component {
+
+    constructor() {
         super();
-        this.state = {
-            tmdbIds: [],
-            movies: [],
-            uuid:auth().currentUser.uid
+        this.state={
+            uuid: auth().currentUser.uid,
+            tmdbIds:[],
+            movies:[]
         }
-        this.docRef =firebase.firestore().collection("Users")
-                .doc(this.state.uuid).collection("WatchLater")
+        this.docRef = firebase.firestore().collection("Users")
+            .doc(this.state.uuid).collection("Ratings")
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
     }
 
-    getWatchLaterMovies = (tmdbIds) => {
+    getRatedMovies = (tmdbIds) => {
         let movies = [];
         const pushes = [];
         for (let item in tmdbIds){
@@ -40,8 +41,8 @@ export default class WatchLater extends Component {
         })
     }
 
+
     async componentDidMount() {
-        console.log("Component Did Mount")
         let localtmdbIds = []
         await this.docRef.get().then(snapshot => {
             snapshot.forEach(doc => {
@@ -49,18 +50,17 @@ export default class WatchLater extends Component {
             })
         })
         this.setState({tmdbIds: localtmdbIds})
-        this.getWatchLaterMovies(localtmdbIds)
+        this.getRatedMovies(localtmdbIds)
     }
 
-    render() {
+    render(){
         return(
             <div>
                 <Header/>
-                <h1 className="heading">Watch Later</h1>
-                <MovieList movies={this.state.movies} isWatchLater={true}/>
+                <h1 className="heading">Movies You've Rated</h1>
+                <MovieList movies={this.state.movies}/>
             </div>
         )
     }
-
 
 }
