@@ -3,7 +3,9 @@ import Header from "../components/header";
 import Rating from "./rating";
 import styles from "./../App.css"
 import CarouselMovies from "./carouselmovies";
-
+import Parser from 'html-react-parser';
+import {Link} from "react-router-dom";
+import {Card} from "react-bootstrap";
 
 export default class MovieDetails extends Component {
 
@@ -13,15 +15,16 @@ export default class MovieDetails extends Component {
             isLoading: true,
             movieInfo: [],
             movieTrailer: '',
-            similarMovies:[]
+            similarMovies:[],
+            movieID: props.location.state.movie,
+            cast:[]
         }
-        this.movieID = props.location.state.movie;
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
     }
 
     getMovieInformation() {
-        // console.log("search term: " + this.state.searchTerm)
-        fetch('https://api.themoviedb.org/3/movie/' + this.movieID + '?api_key=' + this.apiKey + '&language=en-US')
+        console.log("in get movie info")
+        fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '?api_key=' + this.apiKey + '&language=en-US')
             .then(response => response.json())
             .then(response => {
                 // console.log(data)
@@ -32,7 +35,7 @@ export default class MovieDetails extends Component {
             })
 
 
-        fetch('https://api.themoviedb.org/3/movie/' + this.movieID + '/videos?api_key=' + this.apiKey + '&language=en-US')
+        fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/videos?api_key=' + this.apiKey + '&language=en-US')
             .then(data => data.json())
             .then(data => {
                 let key = ''
@@ -49,7 +52,7 @@ export default class MovieDetails extends Component {
 
             })
 
-        fetch('https://api.themoviedb.org/3/movie/'+this.movieID +'/similar?api_key=' + this.apiKey + '&language=en-US&page=1')
+        fetch('https://api.themoviedb.org/3/movie/'+this.state.movieID +'/similar?api_key=' + this.apiKey + '&language=en-US&page=1')
             .then(data => data.json())
             .then(data => {
 
@@ -64,16 +67,61 @@ export default class MovieDetails extends Component {
 
     getMovieGenres = (props) => {
         let htmlResult = ''
-        for (let genre in props.genres){
-            htmlResult = htmlResult + ('<span className="tag">' + genre.name + '</span>')
+        console.log("in get movie Genres")
+        for (let genre in props){
+            console.log(props[genre].name)
+            // htmlResult = htmlResult + "<span className = 'tag'>"+props[genre].name+"</span>"
+            // htmlResult = htmlResult + "&lt;span className = 'tag'&gt;"+props[genre].name+"&lt;/span&gt;"
+            htmlResult = htmlResult + "<span class=\"tag\">"+props[genre].name+"</span>"
+
         }
+
+        //            htmlResult = htmlResult + "&lt;span className = 'tag'&gt;"+props[genre].name+"&lt;/span&gt;"
         // document.getElementByClassName("demo").innerHTML = htmlResult
-        return "<p>hellooo</p>"
+        console.log(htmlResult)
+        return (htmlResult)
     }
 
-    componentWillMount() {
+    async getCastDetails() {
+        let cast1 = ""
+        await fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/credits?api_key=' + this.apiKey + '&language=en-US')
+            .then(response => response.json())
+            .then(response => {
+                console.log(response)
+
+                this.setState({cast: response.cast.slice(0,10)})
+            })
+
+        console.log(this.state.cast)
+
+    }
+    componentDidMount() {
 
         this.getMovieInformation()
+        this.getCastDetails()
+
+    }
+
+    setCast(){
+        let cast1 = ""
+        this.state.cast.forEach((cast => {
+            console.log(cast.name)
+            cast1 = cast1 + "<Link to={{pathname:\"/cast/\""+cast.id+",state:{movie:"+cast.id+"}}}>"+cast.name+"</Link>"
+
+                // "<Link to =+"+ cast.id +", state:{cast:"+cast.id+"} >"
+
+
+            //state:{movie:movie.id}}}>View Details</Link>
+        }))
+
+        return cast1
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+        if(this.props.location.state.movie !== prevProps.location.state.movie){
+            await this.setState({movieID: this.props.location.state.movie})
+            this.componentDidMount()
+        }
 
     }
 
@@ -81,14 +129,13 @@ export default class MovieDetails extends Component {
         return(
             <div>
                 <Header/>
-                <div className="movie-card1">
+                <div style={{styles}}>
                     {this.state.movieInfo.map((movie) => (
                     <div className="container-movie-details">
+                        {/*<div className="image1">*/}
+                            <div className="hero" style={{backgroundImage: "url(https://image.tmdb.org/t/p/w500/"+ movie.backdrop_path + ")"}}>
 
-                    <img src={"https://image.tmdb.org/t/p/w500/"+movie.poster_path}
-                                     alt="cover" className="cover"/>
 
-                        <div className="hero" style={{backgroundImage: "url(https://image.tmdb.org/t/p/w500/"+ movie.backdrop_path + ")"}}>
 
                             <div className="details1">
 
@@ -96,35 +143,36 @@ export default class MovieDetails extends Component {
 
                                 <div className="title2">{movie.tagline}</div>
 
-                                <Rating name = {movie.id}/>
+                                <Rating name = {movie.id} year={movie.release_date}/>
 
                             </div>
+                                </div>
 
-                        </div>
+
+                            {/*</div>*/}
 
                         <div className="description">
 
-                            <div className="column1">
-                                {/*{*/}
-                                {/*    movie.genres.forEach((genre) => {*/}
-                                {/*        <span className="tag">Genre</span>*/}
-                                {/*        }*/}
+                            <div className="column1" style={{marginTop:"50px"}}>
 
-                                {/*    )*/}
-                                {/*}*/}
-                                <span className="tag">Genre</span>
-
+                                <img src={"https://image.tmdb.org/t/p/w500/"+movie.poster_path}
+                                             alt="cover" className="cover"/>
+                                 <div style={{maxWidth:"200px"}}>
+                                    {Parser(this.getMovieGenres(movie.genres))}
+                                 </div>
                             </div>
 
                             <div className="column2">
 
                                 <p>{movie.overview}</p>
                                 <div>
-                                    <span className = "tag">
+                                    <h3 style={{marginTop:2}}>Cast</h3>
                                     {
-                                        this.getMovieGenres(movie.genres)
+                                        this.state.cast.map((cast)=>(
+                                            <span style={{marginRight:10}}><Link to={{pathname:'/cast/'+cast.id ,state:{cast:cast.id,name:cast.name}}}>{cast.name}</Link></span>
+
+                                        ))
                                     }
-                                    </span>
                                 </div>
 
                             </div>
@@ -135,8 +183,10 @@ export default class MovieDetails extends Component {
 
                             </div>
                         </div>
-
-                        <CarouselMovies movies={this.state.similarMovies}/>
+                        <div style={{marginTop:"120px"}}>
+                            <h1 className="heading">Similar movies to {movie.title}</h1>
+                            <CarouselMovies style={{paddingTop:"50px"}} movies={this.state.similarMovies}/>
+                        </div>
                     </div>
                     ))}
                 </div>

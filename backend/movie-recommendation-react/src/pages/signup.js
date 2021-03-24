@@ -26,6 +26,26 @@ export default class SignUp extends Component {
     this.setState({ error: '' });
     try {
       await signup(this.state.email, this.state.password);
+      fetch('/backend/auth/register/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+                          "username": this.state.email,
+                          "password": this.state.password
+                      })
+        })
+          .then(res => res.json())
+          .then(json => {
+            localStorage.setItem('token', json.token);
+            this.setState({
+              logged_in: true,
+              displayed_form: '',
+              username: json.username
+            });
+      });
+
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -37,7 +57,7 @@ export default class SignUp extends Component {
         <form className="mt-5 py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
           <h1>
             Sign Up to
-          <Link className="title" to="/">ABC</Link>
+          <Link className="title" to="/">MovieRec</Link>
           </h1>
           <p className="lead">Fill in the form below to create an account.</p>
           <div className="form-group">
