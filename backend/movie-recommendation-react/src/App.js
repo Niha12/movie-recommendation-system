@@ -8,6 +8,7 @@ import {
 import Home from './pages/home';
 import Main from './pages/main';
 import Signup from './pages/signup';
+import ForgotPassword from './pages/forgotpassword';
 import Login from './pages/login';
 import { auth } from './services/firebase';
 import MovieDetails from "./pages/moviedetails";
@@ -18,6 +19,7 @@ import Settings from "./pages/settings";
 import RatingCharts from "./pages/ratingcharts";
 import MoviesRated from "./pages/ratedmovies";
 import CastMovies from "./pages/castmovies";
+import FriendsPage from "./pages/friendspage";
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
@@ -74,8 +76,10 @@ class App extends Component {
           <Route exact path="/" component={Home}/>
           <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
           <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
+          <PublicRoute path="/forgotpassword" authenticated={this.state.authenticated} component={ForgotPassword}/>
           <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
           <PrivateRoute path="/profile/settings" authenticated={this.state.authenticated} component={Settings}/>
+          <PrivateRoute path="/profile/friends" authenticated={this.state.authenticated} component={FriendsPage}/>
           <PrivateRoute path="/profile/ratings" authenticated={this.state.authenticated} component={RatingCharts}/>
           <PrivateRoute path="/movie_details" authenticated={this.state.authenticated} component={MovieDetails}/>
           <PrivateRoute path="/cast" authenticated={this.state.authenticated} component={CastMovies}/>

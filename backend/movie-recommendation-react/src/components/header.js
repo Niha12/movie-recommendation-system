@@ -43,6 +43,7 @@ function Header() {
                                 <div className="navbar-nav">
                                     <NavDropdown title="Profile" id="collasible-nav-dropdown">
                                         <NavDropdown.Item href="/profile/settings">Settings</NavDropdown.Item>
+                                        <NavDropdown.Item href="/profile/friends">Your Friends</NavDropdown.Item>
                                         <NavDropdown.Item href="/profile/ratings">Your Ratings Data</NavDropdown.Item>
                                     </NavDropdown>
                                     {/*<button className="btn btn-primary" style={{backgroundColor:"#2b6777"}} onClick={() => auth().signOut()}>Logout</button>*/}
