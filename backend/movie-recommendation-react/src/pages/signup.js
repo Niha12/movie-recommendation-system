@@ -54,16 +54,15 @@ export default class SignUp extends Component {
   render() {
     return (
       <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0}}>
-        <form className="mt-5 py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
+        <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
           <h1>
-            Sign Up to
-          <Link className="title" to="/">MovieRec</Link>
+            Sign Up to <Link className="title" to="/">MovieRec</Link>
           </h1>
           <p className="lead">Fill in the form below to create an account.</p>
-          <div className="form-group">
+          <div className="form-group" style={{width:"370px"}}>
             <input className="form-control" placeholder="Email" name="email" type="email" onChange={this.handleChange} value={this.state.email}/>
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{width:"370px"}}>
             <input className="form-control" placeholder="Password" name="password" onChange={this.handleChange} value={this.state.password} type="password"/>
           </div>
           <div className="form-group">

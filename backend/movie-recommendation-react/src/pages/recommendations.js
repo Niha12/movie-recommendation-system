@@ -3,40 +3,29 @@ import Header from "../components/header";
 import MovieList from "./movielist";
 import firebase from "firebase";
 import {auth} from "../services/firebase";
+import {DropdownButton, Dropdown} from "react-bootstrap";
 
 export default class Recommendations extends Component {
 
     constructor(){
         super();
+        this.onClick = this.onClick.bind(this)
         this.state = {
             movies:[],
             uuid : auth().currentUser.uid,
             loading:true,
-            tmdbIds:[]
+            tmdbIds:[],
+            friends:[],
+            name:"Your"
         }
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
-        this.docRef =firebase.firestore().collection("Users")
-                .doc(this.state.uuid).collection("Ratings")
-        // this.setTmdbIds()
-        // this.pickIds()
-
+        this.docRefUsers =firebase.firestore().collection("Users")
+        this.docRefuuid = this.docRefUsers.doc(this.state.uuid)
+        this.docRef = this.docRefuuid.collection("Ratings")
     }
 
     pickIds = (localtmdbIds) => {
         console.log("PickIds")
-        // if(this.state.tmdbIds.length < 10){
-        //     return this.state.tmdbIds
-        // }else if (this.state.tmdbIds.length > 10 && this.state.tmdbIds.length < 30 ){
-        //
-        //     return this.state.tmdbIds.slice(0, 10).map(function () {
-        //         return this.splice(Math.floor(Math.random() * this.state.tmdbIds.length), 1)[0];
-        //     }, this.state.tmdbIds.slice())
-        //
-        // }else{
-        //     return this.state.tmdbIds.slice(0, 20).map(function () {
-        //         return this.splice(Math.floor(Math.random() * this.state.tmdbIds.length), 1)[0];
-        //     }, this.state.tmdbIds.slice())
-        // }
         if(localtmdbIds.length < 10){
             return localtmdbIds
         }else if (localtmdbIds.length > 10 && localtmdbIds.length < 30 ){
@@ -57,7 +46,7 @@ export default class Recommendations extends Component {
         // let results = this.pickIds()
 
         console.log("getrecom")
-        console.log(this.state.tmdbIds)
+        console.log(results)
         // let res = results
         let variab = []
         let bakendUrl = "/backend"
@@ -70,7 +59,6 @@ export default class Recommendations extends Component {
                 'content-Type': 'application/json',
                 'Authorization': backendAPIToken
             },
-            //99861
             body: JSON.stringify({'tmdbId':results,'isUpdate':"false"})
         }).then(response => response.json())
             .then(
@@ -85,19 +73,18 @@ export default class Recommendations extends Component {
 
     }
 
-    fetchSuggestions = (results) => {
+    fetchSuggestions = async (results) => {
         console.log("results: ")
         console.log(results)
         let recommendations = [];
         const pushes = [];
-        for (let item in results){
+        for (let item in results) {
             const url = 'https://api.themoviedb.org/3/movie/' + results[item].tmdbId + '?api_key=' + this.apiKey + '&language=en-US'
             pushes.push(
                 fetch(url).then(response => response.json())
                     .then(json =>
 
                         recommendations.push(json)
-
                     )
                     .catch(err => console.error(err))
             )
@@ -105,55 +92,129 @@ export default class Recommendations extends Component {
         }
 
         let newrecommendations = []
-        Promise.all(pushes).then(()=>{
-            for (let item in recommendations){
-                if (!("success" in recommendations[item])){
+        Promise.all(pushes).then(() => {
+            for (let item in recommendations) {
+                if (!("success" in recommendations[item])) {
                     newrecommendations.push(recommendations[item])
                 }
             }
-            this.setState({movies:newrecommendations})
+            this.setState({movies: newrecommendations})
         })
 
 
-        this.setState({loading: false})
+        await this.setState({loading: false})
     }
     async componentWillMount() {
         let localtmdbIds = []
+        let arr = []
         await this.docRef.where('rating', "==", 5).get().then(snapshot => {
             snapshot.forEach(doc => {
-                console.log("1")
-                console.log(doc.data().name)
-                console.log(typeof doc.data().name)
                 localtmdbIds.push(doc.data().name)
             })
-
 
         })
 
         await this.docRef.where('rating', "==", 4).get().then(snapshot => {
             snapshot.forEach(doc => {
-                console.log("2")
-                console.log(doc.data().name)
                 localtmdbIds.push(doc.data().name)
             })
 
-
         })
+        arr.push({email:"yours",ids:localtmdbIds})
+
+        let localFriendsEmails = ["yours"]
+		await this.docRefuuid.collection("Friends").get().then(snapshot => {
+			snapshot.forEach(doc =>{
+			    if (doc.data().accepted){
+			        localFriendsEmails.push(doc.data().email)
+                }
+			})
+
+
+		})
+
+        await this.setState({friends:localFriendsEmails})
+
+        for (let i = 1; i < localFriendsEmails.length; i++){
+            let obj = {}
+            let ids =[]
+            let id = ""
+
+            await this.docRefUsers.where('email','==', localFriendsEmails[i]).get().then(snapshot =>{
+                snapshot.forEach(function(doc) {
+                    console.log(doc.id)
+                    id = doc.id
+
+                })
+            })
+
+            await this.docRefUsers.doc(id).collection("Ratings").where('rating', "==", 5).get().then(snapshot => {
+
+                    snapshot.forEach(doc => {
+                        // console.log(doc.data().name)
+                        ids.push(doc.data().name)
+                    })
+            })
+
+            await this.docRefUsers.doc(id).collection("Ratings").where('rating', "==", 4).get().then(snapshot => {
+
+                    snapshot.forEach(doc => {
+                        // console.log(doc.data().name)
+                        ids.push(doc.data().name)
+                    })
+            })
+
+            let arr1 = {email:localFriendsEmails[i], ids:ids}
+            // obj[localFriendsEmails[i]] = ids
+            arr.push(arr1)
+        }
+        await this.setState({tmdbIds:arr})
 
         let results = this.pickIds(localtmdbIds)
         this.getRecommendations(results)
     }
 
+    async onClick(user) {
+
+        await this.setState({loading: true, name:user})
+        for (let i = 0; i < this.state.tmdbIds.length; i++) {
+
+            if (this.state.tmdbIds[i].email === user) {
+                let results = this.pickIds(this.state.tmdbIds[i].ids)
+                this.getRecommendations(results)
+            }
+        }
+
+    }
+
     render() {
 
-        return(
-            <div>
-                <Header/>
-                {this.state.loading === true ? <h2>Generating your recommendations...</h2> :
-                    <MovieList movies={this.state.movies}/>
-                }
-            </div>
-        )
+        if (this.state.loading === true){
+            return(
+                <div>
+                    <Header/>
+                     <h2>Generating your recommendations...</h2>
+                </div>
+            )
+        }else{
+            return(
+                <div>
+                    <Header/>
+                    <h1 className="heading">{this.state.name} Recommendations</h1>
+                    <div>
+                        <DropdownButton id="dropdown-basic-button" title="Recommendations" onSelect={this.onClick}>
+                            {
+                                this.state.friends.map((user)=>(
+                                    <Dropdown.Item eventKey={user}>{user}</Dropdown.Item>
+                                ))
+                            }
+                        </DropdownButton>
+                        <MovieList movies={this.state.movies}/>
+                    </div>
+                </div>
+            )
+        }
+
     }
 
 }

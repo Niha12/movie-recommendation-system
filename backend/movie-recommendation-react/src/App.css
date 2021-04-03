@@ -43,6 +43,12 @@
   }
 }
 
+/*Login/Sign up page*/
+.title{
+    color:white;
+}
+
+
 /*Carousel*/
 button.rec-dot{
   background-color: #2b6777;
@@ -477,4 +483,31 @@ button.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
     overflow: auto;
     white-space: normal;
     text-overflow: unset;
+}
+
+
+/*Settings*/
+
+.column1-settings{
+    width: 50%;
+    /*padding-left: 30px;*/
+    padding-bottom:10px;
+    float: left;
+
+}
+
+.column2-settings{
+    width: 50%;
+    padding-left: 30px;
+    padding-bottom:10px;
+    float: right;
+    align-content: center;
+}
+
+/*Dropdown button*/
+
+#dropdown-basic-button{
+    background-color: #0d9d9d;
+    margin-bottom: 20px;
+    margin-left:50px;
 }
