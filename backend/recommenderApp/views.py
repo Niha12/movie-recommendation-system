@@ -1,3 +1,5 @@
+import itertools
+
 from django.contrib.auth import get_user_model
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
@@ -14,6 +16,10 @@ from .serializers import CreateUserSerializer
 class CreateUserAPIView(CreateAPIView):
     serializer_class = CreateUserSerializer
     permission_classes = [AllowAny]
+
+    @staticmethod
+    def get(request):
+        return Response(status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -34,7 +40,8 @@ class CreateUserAPIView(CreateAPIView):
 class LogoutUserAPIView(APIView):
     queryset = get_user_model().objects.all()
 
-    def get(self, request, format=None):
+    @staticmethod
+    def get(request, format=None):
         # simply delete the token to force a login
         request.user.auth_token.delete()
         return Response(
@@ -54,15 +61,17 @@ class CustomAuthToken(ObtainAuthToken):
             'token': token.key,
             'user_id': user.pk,
             'email': user.email
-        })
+        }, status=status.HTTP_201_CREATED)
 
 
 class Recommendations(APIView):
     movieRecommender = MovieRecommendations()
 
-    def get(self, request):
-        # do something with 'GET' method
-        return Response("some data")
+    @staticmethod
+    def get(request):
+        return Response(
+            status=status.HTTP_200_OK
+        )
 
     def post(self, request, format=None):
         data = request.data
@@ -78,11 +87,15 @@ class Recommendations(APIView):
                     filtered_results.append(x)
 
             unique_results = set(filtered_results)
-            # print(unique_results)
+            print(unique_results)
+            new_list = []
             if len(unique_results) > 40:
-                unique_results = unique_results[:40]
-
-            formatted_results = {'results': [{'tmdbId': i} for i in unique_results]}
+                # unique_results = list(unique_results[:40])
+                for i, val in enumerate(itertools.islice(unique_results, 40)):
+                    new_list.append(val)
+            else:
+                new_list = list(unique_results)
+            formatted_results = {'results': [{'tmdbId': i} for i in new_list]}
             print(formatted_results)
             return Response(formatted_results)
 

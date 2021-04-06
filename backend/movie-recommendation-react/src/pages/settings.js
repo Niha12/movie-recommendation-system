@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { auth } from "../services/firebase";
 import Header from "../components/header";
 import firebase from "firebase";
-
+import { deleteUser } from '../services/auth';
 
 export default class Settings extends Component {
     constructor() {
@@ -164,6 +164,12 @@ export default class Settings extends Component {
 	async deleteAccount() {
 		console.log("in delete")
 		await this.docRef.delete()
-		this.state.user.delete()
+		try{
+			await deleteUser();
+
+		}catch(err){
+			this.setState({error:err.message})
+		}
+
 	}
 }

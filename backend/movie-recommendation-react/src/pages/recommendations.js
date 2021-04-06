@@ -13,6 +13,7 @@ export default class Recommendations extends Component {
         this.state = {
             movies:[],
             uuid : auth().currentUser.uid,
+            email : auth().currentUser.email,
             loading:true,
             tmdbIds:[],
             friends:[],
@@ -51,8 +52,9 @@ export default class Recommendations extends Component {
         let variab = []
         let bakendUrl = "/backend"
         let backendAPIToken = "Token " + localStorage.getItem("token")
+        // let backendAPIToken = "Token " + "808bd69e48ac52195b9dd0d502ae972744e29bec"
         console.log(backendAPIToken)
-
+        // fetch(bakendUrl+"/auth/")
         fetch(bakendUrl + "/suggestions", {
             method: 'POST',
             headers: {
