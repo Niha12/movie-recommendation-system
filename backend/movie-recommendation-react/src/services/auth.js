@@ -17,6 +17,10 @@ export function logout() {
   return auth().signOut()
 }
 
+export function deleteUser() {
+    return auth().currentUser.delete()
+}
+
 export function forgotPassword(Email){
     return auth().sendPasswordResetEmail(Email)
           .then(function (user) {

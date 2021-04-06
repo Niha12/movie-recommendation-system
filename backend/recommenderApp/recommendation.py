@@ -10,23 +10,18 @@ import numpy as np
 class MovieRecommendations:
     def __init__(self):
 
-        # def load_sparse_csr(filename):
-        #     loader = np.load(filename)
-        #     return csr_matrix((loader['data'], loader['indices'], loader['indptr']),
-        #                       shape=loader['shape'])
         self.hashmap = np.load('../backend/ml-25m/movie_tmdb_map.npy', allow_pickle='TRUE').item()
         self.matrix = load_npz('../backend/ml-25m/sparse_matrix.npz')
         self.model = joblib.load('../backend/ml-25m/knnModel.pkl')
-        self.path_ratings_src = "../backend/ml-25m/ratings-new.csv"
-        self.path_ratings_dest = "../backend/ml-25m/ratings.csv"
-        copyfile(self.path_ratings_dest, self.path_ratings_src)
-        # print(self.matrix)
+        # self.path_ratings_src = "../backend/ml-25m/ratings-new.csv"
+        # self.path_ratings_dest = "../backend/ml-25m/ratings.csv"
+        # copyfile(self.path_ratings_dest, self.path_ratings_src)
 
     def get_movie_index(self, tmdb_id):
 
         if tmdb_id in self.hashmap:
             movie = self.hashmap[tmdb_id]
-            print(movie)
+            # print(movie)
             return movie
         return "NAN"
 
@@ -46,7 +41,7 @@ class MovieRecommendations:
                 # print(reverse_map)
                 rec_movie_indices = sorted(list(zip(indexes.squeeze().tolist(), distances.squeeze().tolist())),
                                            key=lambda x: x[1], reverse=True)[:0:-1]
-                print("results: " + str(rec_movie_indices))
+                # print("results: " + str(rec_movie_indices))
                 for val in rec_movie_indices:
                     if reverse_map[val[0]] in results:
                         if val[1] < results[reverse_map[val[0]]]:
@@ -54,13 +49,11 @@ class MovieRecommendations:
                     results[reverse_map[val[0]]] = val[1]
 
         results = dict((sorted(results.items(), key=lambda x: x[1])))
-        print(results)
+        # print(results)
 
         return results, checkIds
 
     def update_model(self, data):
         movieId = self.get_movie_index(data[1])
         with open(self.path_ratings_src, 'a') as fd:
-            fd.write(str(data[0]+'A')+','+str(movieId)+','+str(data[2])+','+str(time())+ '\n')
-
-
+            fd.write(str(data[0] + 'A') + ',' + str(movieId) + ',' + str(data[2]) + ',' + str(time()) + '\n')

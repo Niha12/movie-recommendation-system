@@ -15,7 +15,6 @@ export default class Main extends Component {
         this.refreshPage = this.refreshPage.bind(this)
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
         this.uuid = auth().currentUser.uid
-        console.log(this.user)
         this.state = {
             popular:[],
             latest:[],
