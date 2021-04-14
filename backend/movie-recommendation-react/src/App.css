@@ -11,6 +11,14 @@
     padding-left: 2px;
 }
 
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+html {
+  height: -webkit-fill-available;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -45,7 +53,7 @@
 
 /*Login/Sign up page*/
 .title{
-    color:white;
+    color: #ffffff;
 }
 
 
@@ -63,7 +71,7 @@ button.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
   color: #fdfdfd;
   background-color: #9fe9f5;
 }
-.rec.rec-arrow:hover {
+.rec.rec-arrow:hover,.rec.rec-arrow:active,.rec.rec-arrow:focus {
   border-radius: 30px;
   color: #ffffff;
     background-color: #9fe9f5;

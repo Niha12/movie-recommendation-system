@@ -17,7 +17,7 @@ export default class Recommendations extends Component {
             loading:true,
             tmdbIds:[],
             friends:[],
-            name:"Your"
+            name:"yours"
         }
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
         this.docRefUsers =firebase.firestore().collection("Users")
@@ -202,12 +202,12 @@ export default class Recommendations extends Component {
             return(
                 <div>
                     <Header/>
-                    <h1 className="heading">{this.state.name} Recommendations</h1>
+                    <h1 className="heading">{this.state.name==="yours"?"Your":this.state.name} Recommendations</h1>
                     <div>
                         <DropdownButton id="dropdown-basic-button" title="Recommendations" onSelect={this.onClick}>
                             {
                                 this.state.friends.map((user)=>(
-                                    <Dropdown.Item eventKey={user}>{user}</Dropdown.Item>
+                                    <Dropdown.Item eventKey={user}>{user==="yours"?"Yours":user}</Dropdown.Item>
                                 ))
                             }
                         </DropdownButton>

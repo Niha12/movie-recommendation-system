@@ -47,15 +47,15 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, alignContent:"center"}}>
-        <div>
+      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, width:"100%"}}>
+        <div style={ {alignContent:"center"}}>
           <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
             <h1>Login to <Link className="title" to="/">MovieRec</Link></h1>
             <p className="lead">Fill in the form below to login to your account.</p>
-            <div className="form-group" style={{width:"370px"}}>
+            <div className="form-group" style={{width:"360px"}}>
               <input className="form-control" placeholder="Email" name="email" type="email" onChange={this.handleChange} value={this.state.email}/>
             </div>
-            <div className="form-group" style={{width:"370px"}}>
+            <div className="form-group" style={{width:"360px"}}>
               <input className="form-control" placeholder="Password" name="password" onChange={this.handleChange} value={this.state.password} type="password"/>
             </div>
             <div className="form-group">

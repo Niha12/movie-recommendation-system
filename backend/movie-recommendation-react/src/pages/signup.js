@@ -53,7 +53,7 @@ export default class SignUp extends Component {
 
   render() {
     return (
-      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0}}>
+      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, width:"100%"}}>
         <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
           <h1>
             Sign Up to <Link className="title" to="/">MovieRec</Link>

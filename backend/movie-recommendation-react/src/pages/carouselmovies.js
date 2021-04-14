@@ -38,6 +38,7 @@ const CarouselMovies = (props) => {
                                     <Card.Subtitle style={{fontSize:12}} className="mb-2 text-muted">{movie.release_date}</Card.Subtitle>
                                     <Card.Text className="ellipsis">{movie.overview}</Card.Text>
                                     <Rating onChange={props.onChange} name = {movie.id} year={movie.release_date} />
+                                    <p style={{fontSize:"12px", color:"red"}}>Average: {(Math.round(movie.vote_average * 10) / 10)/2}/5</p>
                                     <Link to={{pathname:'/movie_details/'+movie.id ,state:{movie:movie.id}}}>View Details</Link>
                                     <WatchLaterButton movie={movie.id}/>
                                 </Card.Body>

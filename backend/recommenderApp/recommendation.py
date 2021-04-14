@@ -10,9 +10,9 @@ import numpy as np
 class MovieRecommendations:
     def __init__(self):
 
-        self.hashmap = np.load('../backend/ml-25m/movie_tmdb_map.npy', allow_pickle='TRUE').item()
-        self.matrix = load_npz('../backend/ml-25m/sparse_matrix.npz')
-        self.model = joblib.load('../backend/ml-25m/knnModel.pkl')
+        self.hashmap = np.load('./ml-25m/movie_tmdb_map.npy', allow_pickle='TRUE').item()
+        self.matrix = load_npz('./ml-25m/sparse_matrix.npz')
+        self.model = joblib.load('./ml-25m/knnModel.pkl')
         # self.path_ratings_src = "../backend/ml-25m/ratings-new.csv"
         # self.path_ratings_dest = "../backend/ml-25m/ratings.csv"
         # copyfile(self.path_ratings_dest, self.path_ratings_src)
@@ -28,13 +28,12 @@ class MovieRecommendations:
     def get_recommendations(self, data):
         results = {}
         checkIds = []
-
+        print(data)
         for item in data['tmdbId']:
             movie_index = self.get_movie_index(item)
             checkIds.append(item)
             if movie_index != 'NAN':
                 movie = self.matrix[movie_index]
-                print(self.matrix[36])
                 distances, indexes = self.model.kneighbors(movie, n_neighbors=11)
                 # tmdb_ids = self.get_tmdb_ids(indexes)
                 reverse_map = {v: k for k, v in self.hashmap.items()}

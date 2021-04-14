@@ -23,7 +23,6 @@ class TestRecommendations(TestCase):
         client = Client()
         response = client.post(reverse("auth_user_create"), data={"username": "username1", "password": "password1"})
         self.token = response.data.get("token")
-        print(response.data.get("token"))
 
     def test_recommendations(self):
         client = Client(HTTP_AUTHORIZATION='Token ' + self.token)

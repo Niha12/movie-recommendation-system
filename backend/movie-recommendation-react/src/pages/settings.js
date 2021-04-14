@@ -106,35 +106,30 @@ export default class Settings extends Component {
 						<div className="row mb-4">
 							<div className="col-md-6">
 								<div className="form-group">
+									<label htmlFor="oldpassword">Old Password</label>
 									{
-										this.state.error === "wrong-password" ?
-											<label htmlFor="oldpassword">Old Password *Wrong password provided*</label>
-											:
-											this.state.error === "empty-current-password" ?
-											<label htmlFor="oldpassword">Old Password *Please enter your current password to make password changes*</label>
-												:
-											<label htmlFor="oldpassword">Old Password</label>
-									}
+										this.state.error === "wrong-password"  ? <p className="text-danger">Wrong password provided</p> :
+										this.state.error === "empty-current-password" ? <p className="text-danger">Please enter your current password to make password changes</p>
+											:null
 
+									}
 									<input type="password" className="form-control" id="oldpassword"/>
 								</div>
 								<div className="form-group">
+									<label htmlFor="newpassword">New Password</label>
 									{
-										this.state.error === "weak-password" ?
-											<label htmlFor="newpassword">New Password *new password must be atleast 6 letters long*</label>
+										this.state.error === "weak-password" ? <p className="text-danger">New password must be atleast 6 letters long</p>
 											:
-											<label htmlFor="newpassword">New Password</label>
-
+											null
 									}
 
 									<input type="password" className="form-control" id="newpassword"/>
 								</div>
 								<div className="form-group">
+									<label htmlFor="newpassword2">Confirm Password</label>
 									{
-										this.state.error === "wrong-new-password" ?
-											<label htmlFor="newpassword2">Confirm Password *confirm password does not match*</label>
-											:
-											<label htmlFor="newpassword2">Confirm Password</label>
+										this.state.error === "wrong-new-password" ? <p className="text-danger" >Confirm password does not match</p>
+											: null
 									}
 
 									<input type="password" className="form-control" id="newpassword2"/>
@@ -162,14 +157,16 @@ export default class Settings extends Component {
     }
 
 	async deleteAccount() {
-		console.log("in delete")
-		await this.docRef.delete()
-		try{
-			await deleteUser();
+    	if (window.confirm('Are you sure you want to delete your account?')) {
+			await this.docRef.delete()
+			try{
+				await deleteUser();
 
-		}catch(err){
-			this.setState({error:err.message})
+			}catch(err){
+				this.setState({error:err.message})
+			}
+		}else{
+    		this.setState({error:""})
 		}
-
 	}
 }
