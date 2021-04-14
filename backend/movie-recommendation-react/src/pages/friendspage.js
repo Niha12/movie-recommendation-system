@@ -51,6 +51,7 @@ export default class FriendsPage extends Component {
 		event.preventDefault();
 		const email = event.target.friendEmail.value;
 		let validEmail = false;
+		let added = false;
 		let size = ""
 		if (email !== ""){
 
@@ -70,23 +71,32 @@ export default class FriendsPage extends Component {
 					await this.docRef.collection("Friends").where('email','==',email)
 						.limit(1).get().then(snapshot =>{
 							if(snapshot.empty){
+								added = true;
 								this.docRef.collection("Friends").add({email:email,accepted:false})
 							}else{
-								this.setState({error:"friend-already-exists"})
+								if(snapshot.docs[0].data().accepted === true){
+									this.setState({error:"friend-already-exists"})
+								}else{
+									this.setState({error:"friend-request-already-sent"})
+								}
 							}
 						})
+					if (added){
+
+						let id = ""
+						await this.docRefUsers.where('email','==', email).get().then(snapshot =>{
+							snapshot.forEach(function(doc) {
+								console.log(doc.id)
+								id = doc.id
+
+							})
+						})
+						await this.docRefUsers.doc(id).collection("FriendRequests").add({email:this.state.user.email,accepted:false})
+						alert("Friend added")
+					}
+				}else{
+					this.setState({error:"email-not-exist"})
 				}
-				let id = ""
-				await this.docRefUsers.where('email','==', email).get().then(snapshot =>{
-					snapshot.forEach(function(doc) {
-						console.log(doc.id)
-						id = doc.id
-	
-					})
-				})
-	
-				await this.docRefUsers.doc(id).collection("FriendRequests").add({email:this.state.user.email,accepted:false})
-				alert("Friend added")
 			}else{
 				this.setState({error:"5-friends-already"})
 			}
@@ -119,10 +129,25 @@ export default class FriendsPage extends Component {
 
 		await this.docRef.collection("Friends").add({email:user,accepted:true})
 
-		await this.setState({accepted:true})
-
 		window.location.reload()
 
+
+	}
+
+
+	async declineRequest(user) {
+    	console.log("in Delete")
+    	console.log(user)
+		await this.docRef.collection("FriendRequests").where('email', '==', user).limit(1).get().then(function(querySnapshot) {
+          const promises = [];
+          querySnapshot.forEach(function(doc) {
+            promises.push(doc.ref.delete());
+          })
+          return Promise.all(promises);
+        })
+        .then(() => {
+          window.location.reload()
+        })
 
 	}
 
@@ -135,10 +160,16 @@ export default class FriendsPage extends Component {
                 <div style={{alignContent:"center",alignItems:"center"}}>
                     <form onSubmit={this.handleAdd} style={{marginLeft:"10px"}}>
                         <div className="form-group col-md-6">
+							<label htmlFor="firstname">Add Friend with email address</label>
                             {
                                 this.state.error === "friend-already-exists"?
-                                    <label htmlFor="firstname">Add Friend with email address *Email address already exists in friends list*</label>:
-                                    <label htmlFor="firstname">Add Friend with email address</label>
+                                    <p className="text-danger">Email address already exists in friends list</p>:
+									this.state.error === "email-not-exist"?
+									<p className="text-danger">Email address does not exist</p>
+                                    :this.state.error ==="friend-request-already-sent"?
+										<p className="text-danger">Friend request already sent to this email</p>:
+										this.state.error === "5-friends-already"?
+										<p className="text-danger">Cannot add more than 5 friends</p>:null
                             }
                             <div style={{ display:"flex", flexDirection: "row"}}>
                                 <input type="text" id="friendEmail" className="form-control" placeholder="Enter email address"/>
@@ -150,7 +181,7 @@ export default class FriendsPage extends Component {
                     <div className="column1-settings" style={{marginTop:"20px"}}>
                         <h1 className="heading">Your Friends</h1>
 						{
-							this.state.friends === ""?<p style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>No Friends Added</p>:null
+							this.state.friends.length === 0?<p style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>No Friends Added</p>:null
 						}
 						<ul>
                         {
@@ -166,13 +197,13 @@ export default class FriendsPage extends Component {
                     <div className="column2-settings" style={{marginTop:"20px"}} >
                         <h1 className="heading">Friend Requests</h1>
 						{
-							this.state.friendRequests === ""?<p style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>No Friend Requests</p>:null
+							this.state.friendRequests.length === 0?<p style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>No Friend Requests</p>:null
 						}
 						<ul>
                         {
                             this.state.friendRequests.map((val)=>(
 
-                                <li style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>{val}<button style={{marginLeft:10, color:"lightblue"}} onSelect={this.friendRequest(val)}>Accept</button></li>
+                                <li style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>{val}<button style={{marginLeft:10, backgroundColor:"#0a7756", color:"white"}} onClick={()=>this.friendRequest(val)}>Accept</button><button style={{marginLeft:10, backgroundColor:"#bc0a0a",color:"white"}} onClick={()=>this.declineRequest(val)}>Decline</button></li>
 
                             ))
                         }

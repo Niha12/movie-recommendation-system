@@ -1,6 +1,8 @@
 import itertools
-
+import os
+import logging
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -8,9 +10,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.authtoken.views import ObtainAuthToken
-
 from .recommendation import MovieRecommendations
 from .serializers import CreateUserSerializer
+from django.conf import settings
+from django.views.generic import View
 
 
 class CreateUserAPIView(CreateAPIView):
@@ -99,3 +102,24 @@ class Recommendations(APIView):
             print(formatted_results)
             return Response(formatted_results)
 
+
+class FrontendAppView(View):
+    """
+    Serves the compiled frontend entry point (only works if you have run `yarn
+    run build`).
+    """
+    def get(self, request):
+        print (os.path.join(settings.REACT_APP_DIR, 'build', 'index.html'))
+        try:
+            with open(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html')) as f:
+                return HttpResponse(f.read())
+        except FileNotFoundError:
+            logging.exception('Production build of app not found')
+            return HttpResponse(
+                """
+                This URL is only used when you have built the production
+                version of the app. Visit http://localhost:3000/ instead, or
+                run `yarn run build` to test the production version.
+                """,
+                status=501,
+            )

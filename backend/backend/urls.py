@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('backend/', include('recommenderApp.urls')),
-    path('', include('movie-recommendation-react.urls')),
+    path('', include('recommenderApp.urls')),
+    # path('', include('movie-recommendation-react.urls')),
 ]

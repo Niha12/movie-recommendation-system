@@ -6,6 +6,7 @@ import CarouselMovies from "./carouselmovies";
 import Parser from 'html-react-parser';
 import {Link} from "react-router-dom";
 import image from "./../images/no-image-found.png"
+import {Card} from "react-bootstrap";
 
 export default class MovieDetails extends Component {
 
@@ -139,6 +140,7 @@ export default class MovieDetails extends Component {
                                              :
                                         <img src={image} alt='cover' className="cover"/>
                                 }
+                                <p style={{fontSize:"15px", color:"blue", float:"left"}}>Average rating: {(Math.round(movie.vote_average * 10) / 10)/2}/5</p>
 
                                  <div style={{maxWidth:"200px"}}>
                                     {Parser(this.getMovieGenres(movie.genres))}
