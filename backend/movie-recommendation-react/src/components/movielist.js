@@ -16,7 +16,7 @@ const MovieList = (props) => {
             <div className="row" style={{paddingLeft:"50px", float:"left"}}>
 
 
-            {props.movies.map((movie, index) => (
+            {props.movies.map((movie) => (
                 <CardDeck className = "movie-card">
                     <div>
                         <Card className="movie-list">
@@ -31,7 +31,7 @@ const MovieList = (props) => {
                                 <Card.Title className = "ellipsis-title" style={{fontSize:15}}>{movie.title}</Card.Title>
                                 <Card.Subtitle style={{fontSize:12}} className="mb-2 text-muted">{movie.release_date}</Card.Subtitle>
                                 <Card.Text className="ellipsis">{movie.overview}</Card.Text>
-                                <Rating name = {movie.id} year={movie.release_date} />
+                                <Rating name = {movie.id} year={movie.release_date} genres={movie.genres}/>
                                 <p style={{fontSize:"12px", color:"red"}}>Average rating: {(Math.round(movie.vote_average * 10) / 10)/2}/5</p>
                                 <Link to={{pathname:'/movie_details' ,state:{movie:movie.id}}}>View Details</Link>
                                     {

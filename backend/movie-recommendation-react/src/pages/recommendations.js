@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import Header from "../components/header";
-import MovieList from "./movielist";
+import MovieList from "../components/movielist";
 import firebase from "firebase";
 import {auth} from "../services/firebase";
 import {DropdownButton, Dropdown} from "react-bootstrap";
+import Footer from "../components/footer";
 
 export default class Recommendations extends Component {
 
@@ -26,7 +27,6 @@ export default class Recommendations extends Component {
     }
 
     pickIds = (localtmdbIds) => {
-        console.log("PickIds")
         if(localtmdbIds.length < 10){
             return localtmdbIds
         }else if (localtmdbIds.length > 10 && localtmdbIds.length < 30 ){
@@ -43,32 +43,20 @@ export default class Recommendations extends Component {
 
     }
 
-    getRecommendations = (results) => {
-        // let results = this.pickIds()
-
-        console.log("getrecom")
-        console.log(results)
-        // let res = results
-        let variab = []
+    getRecommendations = (results, allIds) => {
         let bakendUrl = "/backend"
         let backendAPIToken = "Token " + localStorage.getItem("token")
-        // let backendAPIToken = "Token " + "808bd69e48ac52195b9dd0d502ae972744e29bec"
-        console.log(backendAPIToken)
-        // fetch(bakendUrl+"/auth/")
         fetch(bakendUrl + "/suggestions", {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json',
                 'Authorization': backendAPIToken
             },
-            body: JSON.stringify({'tmdbId':results,'isUpdate':"false"})
+            body: JSON.stringify({'tmdbId':results,'allIds':allIds,'isUpdate':"false"})
         }).then(response => response.json())
             .then(
                 json => {
-                    // console.log(results)
                     this.setState(this.fetchSuggestions([...json.results]))
-                    console.log(...json.results)
-                    // console.log("ids: "+this.state.tmdbIds)
                 }
             )
             .catch(err => console.error(err))
@@ -76,8 +64,6 @@ export default class Recommendations extends Component {
     }
 
     fetchSuggestions = async (results) => {
-        console.log("results: ")
-        console.log(results)
         let recommendations = [];
         const pushes = [];
         for (let item in results) {
@@ -108,20 +94,21 @@ export default class Recommendations extends Component {
     }
     async componentWillMount() {
         let localtmdbIds = []
+        let allIds = []
         let arr = []
-        await this.docRef.where('rating', "==", 5).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                localtmdbIds.push(doc.data().name)
+
+        for (let i = 0; i <=5; i++){
+            await this.docRef.where('rating', "==", i).get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    if (i === 4 || i === 5){
+                        localtmdbIds.push(doc.data().name)
+                    }
+                    allIds.push(doc.data().name)
+                })
+
             })
+        }
 
-        })
-
-        await this.docRef.where('rating', "==", 4).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                localtmdbIds.push(doc.data().name)
-            })
-
-        })
         arr.push({email:"yours",ids:localtmdbIds})
 
         let localFriendsEmails = ["yours"]
@@ -138,7 +125,6 @@ export default class Recommendations extends Component {
         await this.setState({friends:localFriendsEmails})
 
         for (let i = 1; i < localFriendsEmails.length; i++){
-            let obj = {}
             let ids =[]
             let id = ""
 
@@ -153,7 +139,6 @@ export default class Recommendations extends Component {
             await this.docRefUsers.doc(id).collection("Ratings").where('rating', "==", 5).get().then(snapshot => {
 
                     snapshot.forEach(doc => {
-                        // console.log(doc.data().name)
                         ids.push(doc.data().name)
                     })
             })
@@ -161,19 +146,17 @@ export default class Recommendations extends Component {
             await this.docRefUsers.doc(id).collection("Ratings").where('rating', "==", 4).get().then(snapshot => {
 
                     snapshot.forEach(doc => {
-                        // console.log(doc.data().name)
                         ids.push(doc.data().name)
                     })
             })
 
             let arr1 = {email:localFriendsEmails[i], ids:ids}
-            // obj[localFriendsEmails[i]] = ids
             arr.push(arr1)
         }
         await this.setState({tmdbIds:arr})
 
         let results = this.pickIds(localtmdbIds)
-        this.getRecommendations(results)
+        this.getRecommendations(results, allIds)
     }
 
     async onClick(user) {
@@ -213,6 +196,7 @@ export default class Recommendations extends Component {
                         </DropdownButton>
                         <MovieList movies={this.state.movies}/>
                     </div>
+                    <Footer/>
                 </div>
             )
         }

@@ -12,7 +12,8 @@ export default class SimpleRating extends Component {
             name: props.name,
             uuid : auth().currentUser.uid,
             rating:0,
-            year: props.year
+            year: props.year,
+            genres:props.genres
 
         }
         this.docRef =firebase.firestore().collection("Users")
@@ -29,12 +30,20 @@ export default class SimpleRating extends Component {
 
     storeRating(newValue){
         let today = new Date().toISOString().slice(0,10)
-        console.log(today)
+        let localGenres = []
+        for (let genre in this.state.genres){
+            localGenres.push(this.state.genres[genre].name)
+        }
+
+        console.log(this.state.genres)
+        console.log(localGenres)
+
         const rating : Rating = {
             name: this.state.name,
             release:this.state.year,
             rating: newValue,
-            date:today
+            date:today,
+            genres:localGenres,
         }
 
         if (newValue === null){

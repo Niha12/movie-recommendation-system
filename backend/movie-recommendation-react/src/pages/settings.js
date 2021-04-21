@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { auth } from "../services/firebase";
 import Header from "../components/header";
 import firebase from "firebase";
-import { deleteUser } from '../services/auth';
+import {deleteUser, isVerified} from '../services/auth';
+import Footer from "../components/footer";
 
 export default class Settings extends Component {
     constructor() {
@@ -52,23 +53,18 @@ export default class Settings extends Component {
 
 			const firstname = event.target.firstname.value
 			const lastname = event.target.lastname.value
-			console.log(this.uuid)
 			if (firstname !== "" || lastname !== ""){
 
 				await this.docRef.get().then(snapshot => {
 					if (snapshot.data().Firstname){
-						console.log("in1")
 						this.docRef.update("Firstname",firstname)
 					}else{
-						console.log("in2")
 						this.docRef.set({Firstname: firstname},{merge:true})
 					}
 
 					if (snapshot.data().Lastname){
-						console.log("in3")
 						this.docRef.update("Lastname" ,lastname)
 					}else{
-						console.log("in4")
 						this.docRef.set({Lastname: lastname},{merge:true})
 					}
 
@@ -143,15 +139,21 @@ export default class Settings extends Component {
 									<li>Minimum 6 character</li>
 									<li>Can’t be the same as a previous password</li>
 									<li>You do not need to supply first name and last name information to update password</li>
+
 								</ul>
 							</div>
 						</div>
 						<div style={{ display:"flex", flexDirection: "row"}}>
 							<button type="submit" className="btn btn-primary" name="save">Save Changes</button>
 							<button onClick={()=>this.deleteAccount()} type="delete" className="btn btn-primary" name="delete" style={{backgroundColor:"red", marginLeft:"30px"}}>Delete Account</button>
+							{
+								isVerified() ? <i className="fa fa-user" style={{marginLeft:"30px", marginTop:"7px"}}>You are a verified account</i>:null
+							}
+
 						</div>
 					</form>
 				</div>
+				<Footer/>
 			</div>
         )
     }

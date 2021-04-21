@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import Header from "../components/header";
-import Rating from "./rating";
+import Rating from "../components/rating";
 import styles from "./../App.css"
-import CarouselMovies from "./carouselmovies";
+import CarouselMovies from "../components/carouselmovies";
 import Parser from 'html-react-parser';
 import {Link} from "react-router-dom";
 import image from "./../images/no-image-found.png"
-import {Card} from "react-bootstrap";
+import Footer from "../components/footer";
 
 export default class MovieDetails extends Component {
 
@@ -18,22 +18,22 @@ export default class MovieDetails extends Component {
             movieTrailer: '',
             similarMovies:[],
             movieID: props.location.state.movie,
-            cast:[]
+            cast:[],
+            providers:[],
+            providerUrl: ""
         }
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
+        console.log(this.state.movieID)
     }
 
     getMovieInformation() {
-        console.log("in get movie info")
         fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '?api_key=' + this.apiKey + '&language=en-US')
             .then(response => response.json())
             .then(response => {
-                // console.log(data)
                 this.setState({isLoading: false, movieInfo: [response]})
-
-                // let movies = {movies:[...data.results]}
-                // return movies.movies;
-            })
+            }
+            )
 
 
         fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/videos?api_key=' + this.apiKey + '&language=en-US')
@@ -68,38 +68,46 @@ export default class MovieDetails extends Component {
 
     getMovieGenres = (props) => {
         let htmlResult = ''
-        console.log("in get movie Genres")
         for (let genre in props){
-            console.log(props[genre].name)
-            // htmlResult = htmlResult + "<span className = 'tag'>"+props[genre].name+"</span>"
-            // htmlResult = htmlResult + "&lt;span className = 'tag'&gt;"+props[genre].name+"&lt;/span&gt;"
-            htmlResult = htmlResult + "<span class=\"tag\">"+props[genre].name+"</span>"
+            htmlResult = htmlResult + "" +
+                "<span class=\"tag\">" +
+                "<a style=\"color:white;\" href='/genres#" + props[genre].name +
+                "'>"+props[genre].name+"</a>"+"</span>"
 
         }
 
-        //            htmlResult = htmlResult + "&lt;span className = 'tag'&gt;"+props[genre].name+"&lt;/span&gt;"
-        // document.getElementByClassName("demo").innerHTML = htmlResult
-        console.log(htmlResult)
         return (htmlResult)
     }
 
     async getCastDetails() {
-        let cast1 = ""
         await fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/credits?api_key=' + this.apiKey + '&language=en-US')
             .then(response => response.json())
             .then(response => {
-                console.log(response)
 
                 this.setState({cast: response.cast.slice(0,10)})
             })
 
-        console.log(this.state.cast)
+
+    }
+
+    async getMovieProviders(){
+
+
+        await fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/watch/providers?api_key=' + this.apiKey)
+            .then(response => response.json())
+            .then(response => {
+                if(response.results.GB.flatrate){
+                    this.setState({providers: response.results.GB.flatrate, providerUrl:response.results.GB.link})
+                }
+
+            })
 
     }
     componentDidMount() {
 
         this.getMovieInformation()
         this.getCastDetails()
+        this.getMovieProviders()
 
     }
 
@@ -126,7 +134,7 @@ export default class MovieDetails extends Component {
 
                                 <div className="title2">{movie.tagline}</div>
 
-                                <Rating name = {movie.id} year={movie.release_date}/>
+                                <Rating name = {movie.id} year={movie.release_date}  genres={movie.genres} />
 
                             </div>
                         </div>
@@ -145,6 +153,17 @@ export default class MovieDetails extends Component {
                                  <div style={{maxWidth:"200px"}}>
                                     {Parser(this.getMovieGenres(movie.genres))}
                                  </div>
+                                {
+                                    this.state.providers.length !== 0 ? <p style={{float:"left", color:"red"}}>Streaming Providers: </p>:null
+                                }
+                                {
+                                    this.state.providers.map((provider)=>(
+                                        <a href={this.state.providerUrl}>
+                                            <img src={"https://image.tmdb.org/t/p/w500/"+provider.logo_path}
+                                                alt="provider" className="provider"/>
+                                        </a>
+                                    ))
+                                }
                             </div>
 
                             <div className="column2">
@@ -175,6 +194,7 @@ export default class MovieDetails extends Component {
                     </div>
                     ))}
                 </div>
+                <Footer/>
             </div>
         )
     }

@@ -85,9 +85,14 @@ class Recommendations(APIView):
         else:
             results, checkIds = self.movieRecommender.get_recommendations(data)
             filtered_results = []
+
             for x in results:
                 if x not in checkIds:
                     filtered_results.append(x)
+
+            for item in data['allIds']:
+                if item in filtered_results:
+                    filtered_results.remove(item)
 
             unique_results = set(filtered_results)
             print(unique_results)

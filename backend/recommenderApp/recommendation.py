@@ -35,12 +35,9 @@ class MovieRecommendations:
             if movie_index != 'NAN':
                 movie = self.matrix[movie_index]
                 distances, indexes = self.model.kneighbors(movie, n_neighbors=11)
-                # tmdb_ids = self.get_tmdb_ids(indexes)
                 reverse_map = {v: k for k, v in self.hashmap.items()}
-                # print(reverse_map)
                 rec_movie_indices = sorted(list(zip(indexes.squeeze().tolist(), distances.squeeze().tolist())),
                                            key=lambda x: x[1], reverse=True)[:0:-1]
-                # print("results: " + str(rec_movie_indices))
                 for val in rec_movie_indices:
                     if reverse_map[val[0]] in results:
                         if val[1] < results[reverse_map[val[0]]]:
@@ -48,6 +45,7 @@ class MovieRecommendations:
                     results[reverse_map[val[0]]] = val[1]
 
         results = dict((sorted(results.items(), key=lambda x: x[1])))
+
         # print(results)
 
         return results, checkIds

@@ -1,8 +1,9 @@
 import {Component} from "react";
-import MovieList from "./movielist";
+import MovieList from "../components/movielist";
 import firebase from "firebase";
 import Header from "../components/header";
 import {auth} from "../services/firebase";
+import Footer from "../components/footer";
 
 export default class WatchLater extends Component {
     constructor(){
@@ -21,7 +22,6 @@ export default class WatchLater extends Component {
         let movies = [];
         const pushes = [];
         for (let item in tmdbIds){
-            console.log(item)
             const url = 'https://api.themoviedb.org/3/movie/' + tmdbIds[item] + '?api_key=' + this.apiKey + '&language=en-US'
             pushes.push(
                 fetch(url).then(response => response.json())
@@ -41,7 +41,6 @@ export default class WatchLater extends Component {
     }
 
     async componentDidMount() {
-        console.log("Component Did Mount")
         let localtmdbIds = []
         await this.docRef.get().then(snapshot => {
             snapshot.forEach(doc => {
@@ -58,6 +57,7 @@ export default class WatchLater extends Component {
                 <Header/>
                 <h1 className="heading">Watch Later</h1>
                 <MovieList movies={this.state.movies} isWatchLater={true}/>
+                <Footer/>
             </div>
         )
     }
