@@ -34,8 +34,8 @@ export default class ForgotPassword extends Component {
   render() {
     return (
       <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, alignContent:"center"}}>
-        <div>
-          <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
+        <div style={ {display:"flex", alignItems:"center", flexDirection:"column"}}>
+          <form className="py-5 px-5" style={{marginTop:"40px", backgroundColor:"#95cec3"}} autoComplete="off" onSubmit={this.handleSubmit}>
             <h1>Forgot Password?</h1>
             <p className="lead">Enter the email associated with your account</p>
             <div className="form-group" style={{width:"370px"}}>

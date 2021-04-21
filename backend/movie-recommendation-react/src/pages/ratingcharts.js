@@ -4,6 +4,7 @@ import firebase from "firebase";
 import moment from "moment";
 import CanvasJSReact from '../assets/canvasjs.react';
 import Header from "../components/header";
+import Footer from "../components/footer";
 let CanvasJS = CanvasJSReact.CanvasJS;
 
 export default class RatingCharts extends Component {
@@ -28,6 +29,12 @@ export default class RatingCharts extends Component {
                 axisX: {},
                 axisY: {},
                 data: []
+            },
+            optionsRatingsGenres: {
+                title: {},
+                axisX: {},
+                axisY: {},
+                data: []
             }
         }
 
@@ -40,7 +47,6 @@ export default class RatingCharts extends Component {
         let dictOfYears = {}
         await this.docRef.get().then(snapshot => {
             snapshot.forEach(doc => {
-                // let releaseYear = doc.data().date.substring(0,4)
                 let date = doc.data().date
                 if (date in dictOfYears) {
                     dictOfYears[date] = dictOfYears[date] + 1
@@ -56,16 +62,15 @@ export default class RatingCharts extends Component {
         }).forEach(function (key) {
             ordDict[key] = dictOfYears[key];
         })
-        console.log(ordDict)
+
         let dataPoints = []
         for (let i in ordDict) {
-            dataPoints.push({x: new Date(i.substring(0, 4), i.substring(6, 7), i.substring(9, 10)), y: ordDict[i]})
+            let date =  new Date(i.substring(0, 4), i.substring(5, 7) - 1, i.substring(8))
+            dataPoints.push({x:date, y: ordDict[i]})
         }
 
         let optionsLocal = {
             animationEnabled: true,
-            exportEnabled: true,
-            theme: "light2", // "light1", "dark1", "dark2"
             title: {
                 text: "Your ratings per day"
             },
@@ -74,7 +79,7 @@ export default class RatingCharts extends Component {
             },
             axisX: {
                 title: "Day of Year",
-                valueFormatString: "DD-MM"
+                valueFormatString: "DD-MM",
             },
             data: [{
                 type: "line",
@@ -121,7 +126,6 @@ export default class RatingCharts extends Component {
             },
             data: [
                 {
-                    // Change type to "doughnut", "line", "splineArea", etc.
                     type: "column",
                     dataPoints: [
                         {label: "1", y: numof1},
@@ -133,11 +137,52 @@ export default class RatingCharts extends Component {
                 }
             ]
         }
-        console.log(optionsLocal)
         await this.setState({optionsRatingsFrequency: optionsLocal})
     }
 
-    async ratingsReleaseYear() {
+    async ratingsGenres() {
+        let dictOfGenres = {}
+        await this.docRef.get().then(snapshot => {
+            snapshot.forEach(doc => {
+                let genres = doc.data().genres
+                for (let i in genres){
+                    let genre = genres[i]
+                    if (genre in dictOfGenres) {
+                        dictOfGenres[genre] = dictOfGenres[genre] + 1
+                    } else {
+                        dictOfGenres[genre] = 1
+                    }
+                }
+            })
+        })
+        let dataPoints = []
+        let total = 0
+        for (let i in dictOfGenres) {
+            total = total + dictOfGenres[i]
+        }
+
+        for (let i in dictOfGenres) {
+            dataPoints.push({label: i, y: dictOfGenres[i]/total})
+        }
+
+
+        let optionsLocal = {
+            title: {
+                text: "Distribution of your ratings with genres"
+            },
+            data: [
+                {
+                    type: "pie",
+                    indexLabel: "#percent%",
+                    dataPoints: dataPoints
+
+                }
+            ]
+        }
+        await this.setState({optionsRatingsGenres: optionsLocal})
+    }
+
+    async ratingsReleaseYear(){
         let dictOfYears = {}
         await this.docRef.get().then(snapshot => {
             snapshot.forEach(doc => {
@@ -169,23 +214,21 @@ export default class RatingCharts extends Component {
             },
             data: [
                 {
-                    // Change type to "doughnut", "line", "splineArea", etc.
                     type: "column",
                     dataPoints: dataPoints
 
                 }
             ]
         }
-        console.log(optionsLocal)
         await this.setState({optionsRatingsReleaseYear: optionsLocal})
     }
-
 
     async componentDidMount() {
 
         await this.ratingsPerDay()
         await this.ratingsFrequency()
         await this.ratingsReleaseYear()
+        await this.ratingsGenres()
 
         let chart = new CanvasJS.Chart("chartContainer1", this.state.optionsRatingsReleaseYear);
         chart.render();
@@ -195,6 +238,9 @@ export default class RatingCharts extends Component {
 
         let chart2 = new CanvasJS.Chart("chartContainer3", this.state.optionsRatingsPerDay);
         chart2.render();
+
+        let chart3 = new CanvasJS.Chart("chartContainer4", this.state.optionsRatingsGenres);
+        chart3.render();
 
     }
 
@@ -216,9 +262,9 @@ export default class RatingCharts extends Component {
                 <h1 className="heading"> Your rating data</h1>
                 <div id="chartContainer1" style={{width: "45%",height: "300px",display: "inline-block", float:"left"}}/>
                 <div id="chartContainer2" style={{width: "45%",height: "300px",display: "inline-block", float:"right"}}/><br/>
+                <div id="chartContainer4" style={{width: "50%",height: "300px",display: "inline-block", float:"left"}}/><br/>
                 <div id="chartContainer3" style={{width: "100%",height: "300px",display: "inline-block"}}/>
-
-
+                <Footer/>
             </div>
         )
     }

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+
 # import django
 #
 # os.environ.setdefault("DJANGO_SETTINGS_MODULE", __file__)
@@ -93,8 +94,26 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
     }
 }
+
+# FOR DEPLOYING PURPOSES
+# DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
+# try:
+#     from shutil import copyfile
+#
+#     DB_PATH = "/tmp/db.sqlite3"
+#     copyfile(os.path.join(BASE_DIR, 'db.sqlite3'), DB_PATH)
+# except:
+#     pass
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': DB_PATH,
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -129,9 +148,53 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+STATIC_ROOT = 'static'
 
 STATIC_URL = '/static/'
 
+REACT_APP_DIR = os.path.join(BASE_DIR, 'movie-recommendation-react')
+
 STATICFILES_DIRS = (
-    os.path.join(os.path.join(BASE_DIR, 'movie-recommendation-react'), 'build', 'static'),
+    os.path.join(REACT_APP_DIR, 'build', 'static'),
 )
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] '
+                       'pathname=%(pathname)s lineno=%(lineno)s '
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}

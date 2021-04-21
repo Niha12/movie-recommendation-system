@@ -2,7 +2,8 @@ import {Component} from "react";
 import Header from "../components/header";
 import firebase from "firebase";
 import {auth} from "../services/firebase";
-import MovieList from "./movielist";
+import MovieList from "../components/movielist";
+import Footer from "../components/footer";
 
 export default class MoviesRated extends Component {
 
@@ -22,7 +23,6 @@ export default class MoviesRated extends Component {
         let movies = [];
         const pushes = [];
         for (let item in tmdbIds){
-            console.log(item)
             const url = 'https://api.themoviedb.org/3/movie/' + tmdbIds[item] + '?api_key=' + this.apiKey + '&language=en-US'
             pushes.push(
                 fetch(url).then(response => response.json())
@@ -59,6 +59,7 @@ export default class MoviesRated extends Component {
                 <Header/>
                 <h1 className="heading">Movies You've Rated</h1>
                 <MovieList movies={this.state.movies}/>
+                <Footer/>
             </div>
         )
     }

@@ -1,12 +1,7 @@
 import {Component} from "react";
-import Popup from "reactjs-popup";
-import styles from "./../App.css"
 import firebase from "firebase";
 import { auth } from "../services/firebase";
-import {
-    Popover,
-    Tooltip,
-    Modal, Button
+import { Button
 } from 'react-bootstrap';
 import CarouselMovies from "./carouselmovies";
 
@@ -36,7 +31,6 @@ export default class PreferenceElicitation extends Component {
           .map((a) => a.value)
 
         for (let item in shuffled){
-            console.log(item)
             const url = 'https://api.themoviedb.org/3/movie/' + shuffled[item] + '?api_key=' + this.apiKey + '&language=en-US'
             pushes.push(
                 fetch(url).then(response => response.json())
@@ -60,12 +54,9 @@ export default class PreferenceElicitation extends Component {
     }
 
     async onChange() {
-        console.log("In on change")
-        let localRatings = []
         let num = 0
         await this.docRef.get().then(snapshot => {
             snapshot.forEach(doc => {
-                localRatings.push(doc.data().rating)
                 if (doc.data().rating === 4 || doc.data().rating === 5) {
                     num = num + 1
                 }

@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Header from "../components/header";
-import MovieList from "./movielist";
+import MovieList from "../components/movielist";
+import Footer from "../components/footer";
 
 export default class CastMovies extends Component {
 
@@ -12,23 +13,16 @@ export default class CastMovies extends Component {
             movies:[],
             loading:true
         }
-
+        console.log(this.state.castName)
         this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
     }
 
     async getMovies(){
-        console.log(this.state.castId)
         await fetch('https://api.themoviedb.org/3/person/'+this.state.castId+'/movie_credits?api_key='+this.apiKey+'&language=en-US')
-
-            // 'https://api.themoviedb.org/3/person/'+this.state.castId+'/movie_credits?api_key='+ this.apiKey + '&language=en-US')
-            //https://api.themoviedb.org/3/person/3223/movie_credits?api_key=0e4224cc4fec38376b7e3f8f073a68c6&language=en-US
 
             .then(data => data.json())
             .then(data => {
-                console.log(data)
                 this.setState({movies: data.cast,loading:false})
-                // let movies = {movies:[...data.results]}
-                // return movies.movies;
             })
 
     }
@@ -48,6 +42,7 @@ export default class CastMovies extends Component {
                         :
                         <MovieList movies={this.state.movies}/>
                 }
+                <Footer/>
             </div>
         )
     }

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { auth } from '../services/firebase';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import styles from "./../App.css"
-import Logout from "../pages/logout";
+import Logout from "./logout";
 
 function Header() {
     if(auth().currentUser) {
@@ -46,8 +46,6 @@ function Header() {
                                         <NavDropdown.Item href="/profile/friends">Your Friends</NavDropdown.Item>
                                         <NavDropdown.Item href="/profile/ratings">Your Ratings Data</NavDropdown.Item>
                                     </NavDropdown>
-                                    {/*<button className="btn btn-primary" style={{backgroundColor:"#2b6777"}} onClick={() => auth().signOut()}>Logout</button>*/}
-                                                                        {/*<Nav.Link href="/login" className="btn btn-primary" style={{backgroundColor:"#2b6777",color:"white"}} onSelect={() => auth().signOut()}>Logout</Nav.Link>*/}
                                     <Logout/>
                                 </div>
                             </div>

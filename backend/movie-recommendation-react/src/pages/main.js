@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import Header from "../components/header";
-import SearchBox from "./searchbox";
-import MovieList from "./movielist";
-import CarouselMovies from "./carouselmovies"
-import PreferenceElicitation from "./preferenceelicitation";
+import SearchBox from "../components/searchbox";
+import MovieList from "../components/movielist";
+import CarouselMovies from "../components/carouselmovies"
+import PreferenceElicitation from "../components/preferenceelicitation";
 import firebase from "firebase";
 import { auth } from "../services/firebase";
 import styles from "./../App.css"
-import App from "../App";
+import Footer from "../components/footer";
 
 export default class Main extends Component {
     constructor() {
@@ -32,11 +32,9 @@ export default class Main extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        // this.setState({isSubmit:true})
         fetch('https://api.themoviedb.org/3/search/movie?api_key=' + this.apiKey + '&language=en-US&query=' + this.state.searchTerm)
             .then(data => data.json())
             .then(data => {
-                console.log(...data.results)
                 this.setState({movies: [...data.results]})
             })
 
@@ -46,10 +44,9 @@ export default class Main extends Component {
         } else {
             this.setState({isSubmit: true})
         }
-        // this.setState({isLoaded:true})
 
     }
-    // I changed everything to go back to movies:[] instead of each individual
+
     handleChange = (e) => {
         if (this.state.searchTerm === '') {
             this.setState({isSubmit: false})
@@ -59,15 +56,11 @@ export default class Main extends Component {
 
 
     getPopularMovies = () => {
-        // console.log("search term: " + this.state.searchTerm)
         fetch('https://api.themoviedb.org/3/movie/popular?api_key='+this.apiKey+'&language=en-US&page=1')
             .then(data => data.json())
             .then(data =>
             {
-                // console.log(data)
                 this.setState({popular:[...data.results]})
-                // let movies = {movies:[...data.results]}
-                // return movies.movies;
             })
         return this.state.popular;
     }
@@ -84,9 +77,8 @@ export default class Main extends Component {
 
 
     }
-    // This doesnt give a console error if we get popular movies
+
     getLatestMovies = () => {
-        // console.log("search term: " + this.state.searchTerm)
         fetch('https://api.themoviedb.org/3/movie/upcoming?api_key='+this.apiKey+'&language=en-US')
             .then(data => data.json())
             .then(data =>
@@ -107,14 +99,10 @@ export default class Main extends Component {
         await docRef.where('rating', "==", 4).get().then(snapshot => {
             num = num + snapshot.size
         })
-        console.log(num)
+
         await docRef.where('rating', "==", 5).get().then(snapshot => {
             num = num + snapshot.size
         })
-        console.log(num)
-
-        console.log(!(num > 2))
-
         if (num < 3) {
             await this.setState({isPref: true})
         }
@@ -124,7 +112,6 @@ export default class Main extends Component {
 
     async refreshPage() {
         await this.setState({isPref: false})
-        console.log("In refresh page")
 
     }
 
@@ -167,6 +154,7 @@ export default class Main extends Component {
                                     </div>
                             }
                         </div>
+                        <Footer/>
                     </div>
                 )
             }

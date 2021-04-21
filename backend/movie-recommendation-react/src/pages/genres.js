@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Header from "../components/header";
-import MovieList from "./movielist";
+import MovieList from "../components/movielist";
+import Footer from "../components/footer";
 
 export default class Genres extends Component {
     constructor(props){
@@ -20,21 +21,13 @@ export default class Genres extends Component {
         fetch('https://api.themoviedb.org/3/discover/movie?api_key=' + this.apiKey + '&with_genres=' + this.state.genreChosenId + '&language=en-US&page=1')
             .then(data => data.json())
             .then(data => {
-                // console.log(data)
                 this.setState({movies: [...data.results],loading:false})
-                // let movies = {movies:[...data.results]}
-                // return movies.movies;
             })
-        // return this.state.movies;
-        console.log("inside fetch movies")
-        console.log(this.state.movies)
     }
 
     async componentDidMount() {
-        // console.log(this.state.genreChosen)
         let genre = this.state.genreChosen.split('#')[1]
         let id = 0
-        console.log("In component will mount genre: "+genre)
         this.state.genres.forEach(function (d) {
             if (d.name === genre) {
                 id = d.id
@@ -42,18 +35,10 @@ export default class Genres extends Component {
             }
         })
         await this.setState({genreChosenId: id})
-        console.log("In component will mount id: "+this.state.genreChosenId)
         this.fetchMovies()
-        // this.render()
     }
 
-    // shouldComponentUpdate(nextProps){
-    //     return this.state.genreChosen !== nextProps.location.hash
-    // }
-
     async componentDidUpdate(prevProps, prevState) {
-        console.log("prev props: "+prevProps.location.hash)
-        console.log("this props genre: "+this.props.location.hash)
         if(this.props.location.hash !== prevProps.location.hash){
             await this.setState({genreChosen: this.props.location.hash})
             this.componentDidMount()
@@ -72,7 +57,7 @@ export default class Genres extends Component {
                         <MovieList movies={this.state.movies}/>
                 }
 
-
+                <Footer/>
             </div>
         )
     }

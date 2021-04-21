@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { signin } from '../services/auth';
+import {signin, verifyAccount} from '../services/auth';
 
 export default class Login extends Component {
 
@@ -26,6 +26,7 @@ export default class Login extends Component {
     this.setState({ error: '' });
     try {
       await signin(this.state.email, this.state.password);
+      await verifyAccount()
         fetch('/backend/auth/login/', {
         method: 'POST',
         headers: {
@@ -47,9 +48,9 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, width:"100%"}}>
-        <div style={ {alignContent:"center"}}>
-          <form className="py-5 px-5" autoComplete="off" onSubmit={this.handleSubmit}>
+      <div style={{height:"100vh",backgroundColor:"#52ab98", margin:0, width:"auto"}}>
+        <div style={ {display:"flex", alignItems:"center", flexDirection:"column"}}>
+          <form className="py-5 px-5" style={{marginTop:"40px", backgroundColor:"#95cec3"}} autoComplete="off" onSubmit={this.handleSubmit}>
             <h1>Login to <Link className="title" to="/">MovieRec</Link></h1>
             <p className="lead">Fill in the form below to login to your account.</p>
             <div className="form-group" style={{width:"360px"}}>

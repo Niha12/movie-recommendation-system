@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {auth} from "../services/firebase";
 import firebase from "firebase";
 import Header from "../components/header";
+import Footer from "../components/footer";
 
 
 export default class FriendsPage extends Component {
@@ -136,8 +137,6 @@ export default class FriendsPage extends Component {
 
 
 	async declineRequest(user) {
-    	console.log("in Delete")
-    	console.log(user)
 		await this.docRef.collection("FriendRequests").where('email', '==', user).limit(1).get().then(function(querySnapshot) {
           const promises = [];
           querySnapshot.forEach(function(doc) {
@@ -210,6 +209,7 @@ export default class FriendsPage extends Component {
                         </ul>
                     </div>
                 </div>
+				<Footer/>
             </div>
         )
     }
