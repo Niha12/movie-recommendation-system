@@ -5,6 +5,7 @@ import mainPage from "./../images/mainpage.JPG"
 import movieDetails from "./../images/moviedetails.JPG"
 import {Link} from "react-router-dom";
 
+// Home page prior to logging in - has information about the website
 export default class HomePage extends Component {
 
     render(){
@@ -46,7 +47,6 @@ export default class HomePage extends Component {
                         </div>
                     </div>
                 </div>
-                <Footer/>
             </div>
         )
     }

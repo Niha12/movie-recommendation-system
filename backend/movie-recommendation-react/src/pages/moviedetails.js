@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import image from "./../images/no-image-found.png"
 import Footer from "../components/footer";
 
+// A page with details of a chosen movie
 export default class MovieDetails extends Component {
 
     constructor(props) {
@@ -27,6 +28,8 @@ export default class MovieDetails extends Component {
         console.log(this.state.movieID)
     }
 
+
+    // Gets the required information about the movie to be displayed
     getMovieInformation() {
         fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '?api_key=' + this.apiKey + '&language=en-US')
             .then(response => response.json())
@@ -90,9 +93,8 @@ export default class MovieDetails extends Component {
 
     }
 
+    // Gets a list of where the movie can be found
     async getMovieProviders(){
-
-
         await fetch('https://api.themoviedb.org/3/movie/' + this.state.movieID + '/watch/providers?api_key=' + this.apiKey)
             .then(response => response.json())
             .then(response => {
@@ -103,14 +105,16 @@ export default class MovieDetails extends Component {
             })
 
     }
-    componentDidMount() {
 
+
+    componentDidMount() {
         this.getMovieInformation()
         this.getCastDetails()
         this.getMovieProviders()
 
     }
 
+    // If an another movie is clicked on, it updates it with that movie information
     async componentDidUpdate(prevProps, prevState) {
         if(this.props.location.state.movie !== prevProps.location.state.movie){
             await this.setState({movieID: this.props.location.state.movie})
@@ -194,7 +198,6 @@ export default class MovieDetails extends Component {
                     </div>
                     ))}
                 </div>
-                <Footer/>
             </div>
         )
     }

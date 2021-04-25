@@ -1,6 +1,8 @@
 import React from "react";
 import {MDBCol} from "mdbreact";
 
+
+// Search box for the main page
 const SearchBox = (props) => {
     return (
 

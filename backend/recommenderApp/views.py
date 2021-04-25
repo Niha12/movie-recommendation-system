@@ -16,6 +16,7 @@ from django.conf import settings
 from django.views.generic import View
 
 
+# Register a user in the backend to create a token
 class CreateUserAPIView(CreateAPIView):
     serializer_class = CreateUserSerializer
     permission_classes = [AllowAny]
@@ -40,6 +41,7 @@ class CreateUserAPIView(CreateAPIView):
         )
 
 
+# Log out a user
 class LogoutUserAPIView(APIView):
     queryset = get_user_model().objects.all()
 
@@ -52,6 +54,7 @@ class LogoutUserAPIView(APIView):
         )
 
 
+# Get the token when a user logs in
 class CustomAuthToken(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
@@ -67,6 +70,7 @@ class CustomAuthToken(ObtainAuthToken):
         }, status=status.HTTP_201_CREATED)
 
 
+# Produce recommendations for the frontend
 class Recommendations(APIView):
     movieRecommender = MovieRecommendations()
 
@@ -76,35 +80,41 @@ class Recommendations(APIView):
             status=status.HTTP_200_OK
         )
 
+    # POST request
     def post(self, request, format=None):
         data = request.data
-        print(data)
+
+        # If the ratings file needs to be updated
         if data["isUpdate"] == "true":
             self.movieRecommender.update_model(data["values"])
             return Response("Updated")
         else:
+            # Get a list of IDs as recommendations
             results, checkIds = self.movieRecommender.get_recommendations(data)
             filtered_results = []
 
+            # Checks that the IDs not in the list sent to the backend
             for x in results:
                 if x not in checkIds:
                     filtered_results.append(x)
 
-            for item in data['allIds']:
-                if item in filtered_results:
-                    filtered_results.remove(item)
+            # Checks if the movies are already rated by the user
+            if data['allIds']:
+                for item in data['allIds']:
+                    if item in filtered_results:
+                        filtered_results.remove(item)
 
+            # Removes repeats of IDs
             unique_results = set(filtered_results)
-            print(unique_results)
             new_list = []
+
+            # If there are more than 40 movies, only picks the first 40 to sent to frontend
             if len(unique_results) > 40:
-                # unique_results = list(unique_results[:40])
                 for i, val in enumerate(itertools.islice(unique_results, 40)):
                     new_list.append(val)
             else:
                 new_list = list(unique_results)
             formatted_results = {'results': [{'tmdbId': i} for i in new_list]}
-            print(formatted_results)
             return Response(formatted_results)
 
 
@@ -113,8 +123,9 @@ class FrontendAppView(View):
     Serves the compiled frontend entry point (only works if you have run `yarn
     run build`).
     """
+
     def get(self, request):
-        print (os.path.join(settings.REACT_APP_DIR, 'build', 'index.html'))
+        print(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html'))
         try:
             with open(os.path.join(settings.REACT_APP_DIR, 'build', 'index.html')) as f:
                 return HttpResponse(f.read())

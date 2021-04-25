@@ -5,6 +5,7 @@ import { Button
 } from 'react-bootstrap';
 import CarouselMovies from "./carouselmovies";
 
+// Displays the movies for preference elicitation
 export default class PreferenceElicitation extends Component {
     constructor(props){
         super(props);
@@ -18,9 +19,10 @@ export default class PreferenceElicitation extends Component {
         }
         this.docRef =firebase.firestore().collection("Users")
                 .doc(this.state.uuid).collection("Ratings")
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
     }
 
+    // Gets movie data about the tmdbIds set in state
     getMovies = () => {
         let movies = [];
         const pushes = [];
@@ -53,6 +55,7 @@ export default class PreferenceElicitation extends Component {
         this.getMovies()
     }
 
+    // Every time a user rated a movie, it checks how many have been rated either a 4 or 5
     async onChange() {
         let num = 0
         await this.docRef.get().then(snapshot => {
