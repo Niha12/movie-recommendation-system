@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 import WatchLaterButton from "./watchlaterbutton";
 import image from "./../images/no-image-found.png"
 
-
+// Displays movies in a list for search, recommendations etc
 const MovieList = (props) => {
 
     return (

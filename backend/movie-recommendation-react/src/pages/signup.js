@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {signup, verifyAccount} from '../services/auth';
 
+// Sign up page
 export default class SignUp extends Component {
 
   constructor() {
@@ -21,12 +22,16 @@ export default class SignUp extends Component {
     });
   }
 
+  // Handles when signup is clicked
   async handleSubmit(event) {
     event.preventDefault();
     this.setState({ error: '' });
     try {
+      // Creates an account and sends an email to user to verify
       await signup(this.state.email, this.state.password);
       await verifyAccount()
+
+      // Registers in the backend and gets the token
       fetch('/backend/auth/register/', {
           method: 'POST',
           headers: {

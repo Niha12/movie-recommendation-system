@@ -1,7 +1,7 @@
 from django.conf.urls import url
-from rest_framework.authtoken.views import obtain_auth_token
 from .views import CreateUserAPIView, LogoutUserAPIView, Recommendations, CustomAuthToken, FrontendAppView
 
+# Url routing
 urlpatterns = [
     url(r'^backend/auth/login/$',
         CustomAuthToken.as_view(),
@@ -15,5 +15,6 @@ urlpatterns = [
 
     url('backend/suggestions', Recommendations.as_view(), name="recommendations"),
 
+    # Anything else is redirected to frontend
     url(r'^', FrontendAppView.as_view()),
 ]

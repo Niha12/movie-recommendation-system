@@ -9,17 +9,17 @@ import { auth } from "../services/firebase";
 import styles from "./../App.css"
 import Footer from "../components/footer";
 
+// Main page with carousels of movies
 export default class Main extends Component {
     constructor() {
         super()
         this.refreshPage = this.refreshPage.bind(this)
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
         this.uuid = auth().currentUser.uid
         this.state = {
             popular:[],
             latest:[],
             toprated:[],
-            search:[],
             movies:[],
             searchTerm: '',
             isSubmit: false,
@@ -30,6 +30,8 @@ export default class Main extends Component {
 
     }
 
+
+    // Handles a search request
     handleSubmit = (e) => {
         e.preventDefault();
         fetch('https://api.themoviedb.org/3/search/movie?api_key=' + this.apiKey + '&language=en-US&query=' + this.state.searchTerm)
@@ -54,7 +56,7 @@ export default class Main extends Component {
         this.setState({searchTerm: e.target.value})
     }
 
-
+    // Gets the popular movies from API
     getPopularMovies = () => {
         fetch('https://api.themoviedb.org/3/movie/popular?api_key='+this.apiKey+'&language=en-US&page=1')
             .then(data => data.json())
@@ -65,6 +67,7 @@ export default class Main extends Component {
         return this.state.popular;
     }
 
+    // Gets most grossing movies from API
     getBiggestGrossingMovies =() => {
         fetch('https://api.themoviedb.org/3/discover/movie?api_key='+this.apiKey+'&language=en-US&sort_by=revenue.desc&include_adult=false&include_video=false&page=1')
             .then(data => data.json())
@@ -78,6 +81,7 @@ export default class Main extends Component {
 
     }
 
+    // Gets the latest movies from API
     getLatestMovies = () => {
         fetch('https://api.themoviedb.org/3/movie/upcoming?api_key='+this.apiKey+'&language=en-US')
             .then(data => data.json())
@@ -91,6 +95,7 @@ export default class Main extends Component {
 
     }
 
+    // If it's users first time logging in, preference elicitation is done.
     async setPref() {
         let num = 0
         let docRef = firebase.firestore().collection("Users")
@@ -110,6 +115,7 @@ export default class Main extends Component {
         this.setState({isLoaded:true})
     }
 
+    // Once the preference elicitation is done, it refreshes the page
     async refreshPage() {
         await this.setState({isPref: false})
 
@@ -154,7 +160,6 @@ export default class Main extends Component {
                                     </div>
                             }
                         </div>
-                        <Footer/>
                     </div>
                 )
             }

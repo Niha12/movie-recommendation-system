@@ -6,6 +6,7 @@ import {auth} from "../services/firebase";
 import {DropdownButton, Dropdown} from "react-bootstrap";
 import Footer from "../components/footer";
 
+// Produces recommendations
 export default class Recommendations extends Component {
 
     constructor(){
@@ -18,14 +19,16 @@ export default class Recommendations extends Component {
             loading:true,
             tmdbIds:[],
             friends:[],
-            name:"yours"
+            name:"yours",
+            allIds:[]
         }
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
         this.docRefUsers =firebase.firestore().collection("Users")
         this.docRefuuid = this.docRefUsers.doc(this.state.uuid)
         this.docRef = this.docRefuuid.collection("Ratings")
     }
 
+    // Picks a certain number of TMDB Ids randomly
     pickIds = (localtmdbIds) => {
         if(localtmdbIds.length < 10){
             return localtmdbIds
@@ -43,7 +46,8 @@ export default class Recommendations extends Component {
 
     }
 
-    getRecommendations = (results, allIds) => {
+    // Calls the backend to generate recommendations
+    getRecommendations = (results) => {
         let bakendUrl = "/backend"
         let backendAPIToken = "Token " + localStorage.getItem("token")
         fetch(bakendUrl + "/suggestions", {
@@ -52,7 +56,7 @@ export default class Recommendations extends Component {
                 'content-Type': 'application/json',
                 'Authorization': backendAPIToken
             },
-            body: JSON.stringify({'tmdbId':results,'allIds':allIds,'isUpdate':"false"})
+            body: JSON.stringify({'tmdbId':results,'allIds':this.state.allIds,'isUpdate':"false"})
         }).then(response => response.json())
             .then(
                 json => {
@@ -63,6 +67,7 @@ export default class Recommendations extends Component {
 
     }
 
+    // Uses the API to get the movie information of the list of movies generated from backend
     fetchSuggestions = async (results) => {
         let recommendations = [];
         const pushes = [];
@@ -92,11 +97,14 @@ export default class Recommendations extends Component {
 
         await this.setState({loading: false})
     }
+
     async componentWillMount() {
         let localtmdbIds = []
         let allIds = []
         let arr = []
 
+
+        // Gets all movies that the user has rated 4 or 5 out of 5
         for (let i = 0; i <=5; i++){
             await this.docRef.where('rating', "==", i).get().then(snapshot => {
                 snapshot.forEach(doc => {
@@ -108,9 +116,11 @@ export default class Recommendations extends Component {
 
             })
         }
+        this.setState({allIds:allIds})
 
         arr.push({email:"yours",ids:localtmdbIds})
 
+        // Gets the friends to
         let localFriendsEmails = ["yours"]
 		await this.docRefuuid.collection("Friends").get().then(snapshot => {
 			snapshot.forEach(doc =>{
@@ -124,13 +134,13 @@ export default class Recommendations extends Component {
 
         await this.setState({friends:localFriendsEmails})
 
+        // Gets the tmdb Ids rated by the friend 4 or 5 out of 5
         for (let i = 1; i < localFriendsEmails.length; i++){
             let ids =[]
             let id = ""
 
             await this.docRefUsers.where('email','==', localFriendsEmails[i]).get().then(snapshot =>{
                 snapshot.forEach(function(doc) {
-                    console.log(doc.id)
                     id = doc.id
 
                 })
@@ -154,11 +164,13 @@ export default class Recommendations extends Component {
             arr.push(arr1)
         }
         await this.setState({tmdbIds:arr})
+        await this.setState()
 
         let results = this.pickIds(localtmdbIds)
-        this.getRecommendations(results, allIds)
+        this.getRecommendations(results)
     }
 
+    // Depending on which email the user clicked on, it displays their recommendations
     async onClick(user) {
 
         await this.setState({loading: true, name:user})
@@ -196,7 +208,6 @@ export default class Recommendations extends Component {
                         </DropdownButton>
                         <MovieList movies={this.state.movies}/>
                     </div>
-                    <Footer/>
                 </div>
             )
         }

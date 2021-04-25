@@ -5,6 +5,7 @@ import {auth} from "../services/firebase";
 import MovieList from "../components/movielist";
 import Footer from "../components/footer";
 
+// Displays a list of the movies already rated by the user
 export default class MoviesRated extends Component {
 
     constructor() {
@@ -16,7 +17,7 @@ export default class MoviesRated extends Component {
         }
         this.docRef = firebase.firestore().collection("Users")
             .doc(this.state.uuid).collection("Ratings")
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
     }
 
     getRatedMovies = (tmdbIds) => {
@@ -59,7 +60,6 @@ export default class MoviesRated extends Component {
                 <Header/>
                 <h1 className="heading">Movies You've Rated</h1>
                 <MovieList movies={this.state.movies}/>
-                <Footer/>
             </div>
         )
     }

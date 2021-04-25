@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {signin, verifyAccount} from '../services/auth';
 
+// Login page
 export default class Login extends Component {
 
   constructor() {
@@ -21,13 +22,17 @@ export default class Login extends Component {
     });
   }
 
+  // Is called when a user enters their details and presses 'Login'
   async handleSubmit(event) {
     event.preventDefault();
     this.setState({ error: '' });
     try {
+      // First the user is signed in, then checks it the account need to be verified
       await signin(this.state.email, this.state.password);
       await verifyAccount()
-        fetch('/backend/auth/login/', {
+
+      // Makes a call to the backend for the token
+      fetch('/backend/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

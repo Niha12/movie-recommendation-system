@@ -1,8 +1,9 @@
 import React from 'react';
 
+// Footer component to be displayed on each page
 function Footer(){
     return (
-        <div className="container">
+        <div className="footer">
             <hr/>
             <div className="row">
                 <div className="col-md-8 col-sm-6 col-xs-12">
@@ -12,7 +13,8 @@ function Footer(){
             </div>
         </div>
     )
-
 }
+
+
 export default Footer
 

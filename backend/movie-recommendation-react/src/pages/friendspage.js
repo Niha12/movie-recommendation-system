@@ -4,7 +4,7 @@ import firebase from "firebase";
 import Header from "../components/header";
 import Footer from "../components/footer";
 
-
+// Displays the friends the user has added and any requests they have
 export default class FriendsPage extends Component {
     constructor() {
         super();
@@ -21,7 +21,7 @@ export default class FriendsPage extends Component {
 
     }
 
-
+	// Gets the friends and friends request list from database
 	async componentDidMount() {
     	let localFriendsEmails = []
 		await this.docRef.collection("Friends").get().then(snapshot =>{
@@ -47,7 +47,7 @@ export default class FriendsPage extends Component {
 
 	}
 
-
+	// Handles the adding of a friend by sending a request to them
 	handleAdd = async (event) => {
 		event.preventDefault();
 		const email = event.target.friendEmail.value;
@@ -59,7 +59,8 @@ export default class FriendsPage extends Component {
 			await this.docRef.collection("Friends").get().then(value=> {
 				size = value.size
 			})
-			
+
+			// Checks if the user already has 5 friends
 			if(size < 5){
 				await this.docRefUsers.where('email','==',email).limit(1).get().then(snapshot => {
 						if (!snapshot.empty) {
@@ -67,7 +68,8 @@ export default class FriendsPage extends Component {
 						}
 					}
 				)
-	
+
+				// Checks if inputted email is valid, if it is, then the user is sent a request
 				if (validEmail){
 					await this.docRef.collection("Friends").where('email','==',email)
 						.limit(1).get().then(snapshot =>{
@@ -83,7 +85,6 @@ export default class FriendsPage extends Component {
 							}
 						})
 					if (added){
-
 						let id = ""
 						await this.docRefUsers.where('email','==', email).get().then(snapshot =>{
 							snapshot.forEach(function(doc) {
@@ -106,8 +107,8 @@ export default class FriendsPage extends Component {
     	event.target.reset()
 	}
 
-
-	async friendRequest(user) {
+	// Called when a user accepts their request
+	async acceptRequest(user) {
 
 		let id = ""
 		await this.docRefUsers.where('email', '==', user).get().then(snapshot => {
@@ -128,14 +129,14 @@ export default class FriendsPage extends Component {
 			value.docs[0].ref.delete()
 		})
 
-		await this.docRef.collection("Friends").add({email:user,accepted:true})
-
-		window.location.reload()
-
+		await this.docRef.collection("Friends").add({email:user,accepted:true}).then(() => {
+			window.location.reload()
+			alert(user + " has been added")
+		})
 
 	}
 
-
+	// Called when a user declines a request
 	async declineRequest(user) {
 		await this.docRef.collection("FriendRequests").where('email', '==', user).limit(1).get().then(function(querySnapshot) {
           const promises = [];
@@ -146,6 +147,7 @@ export default class FriendsPage extends Component {
         })
         .then(() => {
           window.location.reload()
+			alert(user + " request has been deleted")
         })
 
 	}
@@ -202,14 +204,13 @@ export default class FriendsPage extends Component {
                         {
                             this.state.friendRequests.map((val)=>(
 
-                                <li style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>{val}<button style={{marginLeft:10, backgroundColor:"#0a7756", color:"white"}} onClick={()=>this.friendRequest(val)}>Accept</button><button style={{marginLeft:10, backgroundColor:"#bc0a0a",color:"white"}} onClick={()=>this.declineRequest(val)}>Decline</button></li>
+                                <li style={{fontFamily:"sans-serif",fontSize:"18px", marginLeft:"10px"}}>{val}<button style={{marginLeft:10, backgroundColor:"#0a7756", color:"white"}} onClick={()=>this.acceptRequest(val)}>Accept</button><button style={{marginLeft:10, backgroundColor:"#bc0a0a",color:"white"}} onClick={()=>this.declineRequest(val)}>Decline</button></li>
 
                             ))
                         }
                         </ul>
                     </div>
                 </div>
-				<Footer/>
             </div>
         )
     }

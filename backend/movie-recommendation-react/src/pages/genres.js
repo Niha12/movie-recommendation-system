@@ -3,6 +3,7 @@ import Header from "../components/header";
 import MovieList from "../components/movielist";
 import Footer from "../components/footer";
 
+// Displays movies according to genres
 export default class Genres extends Component {
     constructor(props){
         super(props);
@@ -13,10 +14,11 @@ export default class Genres extends Component {
             movies: [],
             loading:true
         }
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
 
     }
 
+    // Get movies based on a certain genre
     fetchMovies() {
         fetch('https://api.themoviedb.org/3/discover/movie?api_key=' + this.apiKey + '&with_genres=' + this.state.genreChosenId + '&language=en-US&page=1')
             .then(data => data.json())
@@ -38,6 +40,8 @@ export default class Genres extends Component {
         this.fetchMovies()
     }
 
+    // Component should update when the location changed
+    // which means another genre has been chosen
     async componentDidUpdate(prevProps, prevState) {
         if(this.props.location.hash !== prevProps.location.hash){
             await this.setState({genreChosen: this.props.location.hash})
@@ -57,7 +61,6 @@ export default class Genres extends Component {
                         <MovieList movies={this.state.movies}/>
                 }
 
-                <Footer/>
             </div>
         )
     }

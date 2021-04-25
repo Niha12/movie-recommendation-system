@@ -7,13 +7,18 @@ import { Link } from 'react-router-dom';
 import image from "./../images/no-image-found.png"
 import WatchLaterButton from "./watchlaterbutton";
 
+
+// Breakpoints to set the number of items shown for different screen sizes
 const breakPoints = [
   { width: 1, itemsToShow: 1 },
   { width: 550, itemsToShow: 3, itemsToScroll: 2 },
   { width: 768, itemsToShow: 5, itemsToScroll: 3  }
 ];
 
+
 const CarouselMovies = (props) => {
+
+    // Ensures that when end of carousel is reached, it goes back to the beginning
     const carouselRef = React.useRef(null);
     const onNextStart = (currentItem, nextItem) => {
       if (currentItem.index === nextItem.index) {
@@ -26,6 +31,7 @@ const CarouselMovies = (props) => {
       }
     };
 
+    // Displays movies in a carousel
     return(
         <div className = "row" style={{width:"100%",styles}}>
             <Carousel breakPoints={breakPoints} isRTL={false} className="rec-carousel-item" disableArrowsOnEnd={false} ref={carouselRef} onPrevStart={onPrevStart} onNextStart={onNextStart}>

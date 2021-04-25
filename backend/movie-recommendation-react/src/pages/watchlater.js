@@ -5,6 +5,7 @@ import Header from "../components/header";
 import {auth} from "../services/firebase";
 import Footer from "../components/footer";
 
+// Displays movies saved by the user
 export default class WatchLater extends Component {
     constructor(){
         super();
@@ -15,7 +16,7 @@ export default class WatchLater extends Component {
         }
         this.docRef =firebase.firestore().collection("Users")
                 .doc(this.state.uuid).collection("WatchLater")
-        this.apiKey = '0e4224cc4fec38376b7e3f8f073a68c6'
+        this.apiKey = process.env.REACT_APP_TMDB_API_KEY
     }
 
     getWatchLaterMovies = (tmdbIds) => {
@@ -57,7 +58,6 @@ export default class WatchLater extends Component {
                 <Header/>
                 <h1 className="heading">Watch Later</h1>
                 <MovieList movies={this.state.movies} isWatchLater={true}/>
-                <Footer/>
             </div>
         )
     }

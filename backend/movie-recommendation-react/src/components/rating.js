@@ -4,6 +4,7 @@ import Box from '@material-ui/core/Box';
 import firebase from "firebase";
 import { auth } from "../services/firebase";
 
+// Star rating to be displayed on the hover of each movie
 export default class SimpleRating extends Component {
     constructor(props) {
         super(props)
@@ -27,7 +28,7 @@ export default class SimpleRating extends Component {
         this.setState({rating:value})
     }
 
-
+    // If a user rates a movie, it saves it in the database
     storeRating(newValue){
         let today = new Date().toISOString().slice(0,10)
         let localGenres = []
@@ -60,18 +61,21 @@ export default class SimpleRating extends Component {
             })
 
 
-            // let values =[this.state.uuid,this.state.name,newValue]
-            // let bakendUrl = "/backend"
-            // let backendAPIToken = "Token " + localStorage.getItem("token")
-            //
-            // fetch(bakendUrl + "/suggestions", {
-            //     method: 'POST',
-            //     headers: {
-            //         'content-Type': 'application/json',
-            //         'Authorization': backendAPIToken
-            //     },
-            //     body: JSON.stringify({'values':values,'isUpdate':"true"})
-            // }).catch(err => console.error(err))
+            // This is the code for adding the ratings into a rating file so that a new
+            // model can be generated with more user information
+
+            //// let values =[this.state.uuid,this.state.name,newValue]
+            //// let backendUrl = "/backend"
+            //// let backendAPIToken = "Token " + localStorage.getItem("token")
+            ////
+            //// fetch(backendUrl + "/suggestions", {
+            ////     method: 'POST',
+            ////     headers: {
+            ////         'content-Type': 'application/json',
+            ////         'Authorization': backendAPIToken
+            ////     },
+            ////     body: JSON.stringify({'values':values,'isUpdate':"true"})
+            //// }).catch(err => console.error(err))
         }
 
     }

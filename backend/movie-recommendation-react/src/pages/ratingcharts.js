@@ -7,6 +7,7 @@ import Header from "../components/header";
 import Footer from "../components/footer";
 let CanvasJS = CanvasJSReact.CanvasJS;
 
+// Displays charts for user
 export default class RatingCharts extends Component {
     constructor() {
         super();
@@ -43,6 +44,7 @@ export default class RatingCharts extends Component {
 
     }
 
+    // Line graph with ratings per day
     async ratingsPerDay() {
         let dictOfYears = {}
         await this.docRef.get().then(snapshot => {
@@ -91,6 +93,7 @@ export default class RatingCharts extends Component {
         await this.setState({optionsRatingsPerDay: optionsLocal})
     }
 
+    // Bar graph with number of movies of each rating 5,4,3,2,1
     async ratingsFrequency() {
         let numof5 = 0
         let numof4 = 0
@@ -140,6 +143,7 @@ export default class RatingCharts extends Component {
         await this.setState({optionsRatingsFrequency: optionsLocal})
     }
 
+    // Pie chart with percentage of each genre rated
     async ratingsGenres() {
         let dictOfGenres = {}
         await this.docRef.get().then(snapshot => {
@@ -182,6 +186,7 @@ export default class RatingCharts extends Component {
         await this.setState({optionsRatingsGenres: optionsLocal})
     }
 
+    // Bar graph with number of movies in each year
     async ratingsReleaseYear(){
         let dictOfYears = {}
         await this.docRef.get().then(snapshot => {
@@ -264,7 +269,6 @@ export default class RatingCharts extends Component {
                 <div id="chartContainer2" style={{width: "45%",height: "300px",display: "inline-block", float:"right"}}/><br/>
                 <div id="chartContainer4" style={{width: "50%",height: "300px",display: "inline-block", float:"left"}}/><br/>
                 <div id="chartContainer3" style={{width: "100%",height: "300px",display: "inline-block"}}/>
-                <Footer/>
             </div>
         )
     }

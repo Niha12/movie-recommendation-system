@@ -3,6 +3,7 @@ import { auth } from '../services/firebase';
 import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import styles from "./../App.css"
 
+// Header component that is displayed on the home page
 function HomePageHeader() {
   return (
     <header style={styles}>

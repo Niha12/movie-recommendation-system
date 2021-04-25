@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { forgotPassword } from '../services/auth';
 
+// Handles the request when a user forgets their password
 export default class ForgotPassword extends Component {
 
   constructor() {
@@ -20,6 +21,7 @@ export default class ForgotPassword extends Component {
     });
   }
 
+  // Send an email to the user to reset password
   async handleSubmit(event) {
       this.setState({ error: '' });
       event.preventDefault();

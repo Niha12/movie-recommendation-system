@@ -5,6 +5,8 @@ import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import styles from "./../App.css"
 import Logout from "./logout";
 
+
+// Header component to be displayed on every page apart from home page
 function Header() {
     if(auth().currentUser) {
         return (

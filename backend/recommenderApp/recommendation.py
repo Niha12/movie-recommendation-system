@@ -1,12 +1,13 @@
 from datetime import time
 from shutil import copyfile
-
 import pandas as pd
+
 import joblib
-from scipy.sparse import load_npz, csr_matrix
+from scipy.sparse import load_npz
 import numpy as np
 
 
+# Gets movie recommendations
 class MovieRecommendations:
     def __init__(self):
 
@@ -17,18 +18,19 @@ class MovieRecommendations:
         # self.path_ratings_dest = "../backend/ml-25m/ratings.csv"
         # copyfile(self.path_ratings_dest, self.path_ratings_src)
 
+    # Converts between tmdbIDs to movieIds
     def get_movie_index(self, tmdb_id):
 
         if tmdb_id in self.hashmap:
             movie = self.hashmap[tmdb_id]
-            # print(movie)
             return movie
         return "NAN"
 
     def get_recommendations(self, data):
         results = {}
         checkIds = []
-        print(data)
+
+        # For every tmdb ID, it generated recommendations
         for item in data['tmdbId']:
             movie_index = self.get_movie_index(item)
             checkIds.append(item)
@@ -37,7 +39,9 @@ class MovieRecommendations:
                 distances, indexes = self.model.kneighbors(movie, n_neighbors=11)
                 reverse_map = {v: k for k, v in self.hashmap.items()}
                 rec_movie_indices = sorted(list(zip(indexes.squeeze().tolist(), distances.squeeze().tolist())),
-                                           key=lambda x: x[1], reverse=True)[:0:-1]
+                                        key=lambda x: x[1], reverse=True)[:0:-1]
+
+                # Converts back to tmdb IDs
                 for val in rec_movie_indices:
                     if reverse_map[val[0]] in results:
                         if val[1] < results[reverse_map[val[0]]]:
@@ -46,10 +50,9 @@ class MovieRecommendations:
 
         results = dict((sorted(results.items(), key=lambda x: x[1])))
 
-        # print(results)
-
         return results, checkIds
 
+    # This is called if 'isUpdate' is set to true. It adds the rating to the ratings csv file
     def update_model(self, data):
         movieId = self.get_movie_index(data[1])
         with open(self.path_ratings_src, 'a') as fd:
