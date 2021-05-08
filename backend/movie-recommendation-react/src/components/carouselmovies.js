@@ -17,24 +17,10 @@ const breakPoints = [
 
 
 const CarouselMovies = (props) => {
-
-    // Ensures that when end of carousel is reached, it goes back to the beginning
-    const carouselRef = React.useRef(null);
-    const onNextStart = (currentItem, nextItem) => {
-      if (currentItem.index === nextItem.index) {
-        carouselRef.current.goTo(0);
-      }
-    };
-    const onPrevStart = (currentItem, nextItem) => {
-      if (currentItem.index === nextItem.index) {
-        carouselRef.current.goTo(props.movies.length);
-      }
-    };
-
     // Displays movies in a carousel
     return(
         <div className = "row" style={{width:"100%",styles}}>
-            <Carousel breakPoints={breakPoints} isRTL={false} className="rec-carousel-item" disableArrowsOnEnd={false} ref={carouselRef} onPrevStart={onPrevStart} onNextStart={onNextStart}>
+            <Carousel breakPoints={breakPoints} isRTL={false} className="rec-carousel-item">
                     {props.movies.map((movie) => (
                         <CardDeck className = "movie-card" style={{height:"300px"}}>
                         <div className="div2">

@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from .views import CreateUserAPIView, LogoutUserAPIView, Recommendations, CustomAuthToken, FrontendAppView
 
+
 # Url routing
 urlpatterns = [
     url(r'^backend/auth/login/$',
@@ -12,9 +13,13 @@ urlpatterns = [
     url(r'^backend/auth/logout/$',
         LogoutUserAPIView.as_view(),
         name='auth_user_logout'),
+    # url(r'^backend/auth/changepassword/$',
+    #     UserChangePassword.as_view(),
+    #     name='auth_user_changepassword'),
 
     url('backend/suggestions', Recommendations.as_view(), name="recommendations"),
 
     # Anything else is redirected to frontend
     url(r'^', FrontendAppView.as_view()),
 ]
+

@@ -198,6 +198,7 @@ export default class MovieDetails extends Component {
                     </div>
                     ))}
                 </div>
+                <Footer/>
             </div>
         )
     }

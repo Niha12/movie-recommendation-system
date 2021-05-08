@@ -61,21 +61,21 @@ export default class SimpleRating extends Component {
             })
 
 
-            // This is the code for adding the ratings into a rating file so that a new
-            // model can be generated with more user information
+            // This code can be used to add the user rating into the rating.csv file
+            // so that a new model can be generated with more user information in the future
 
-            //// let values =[this.state.uuid,this.state.name,newValue]
-            //// let backendUrl = "/backend"
-            //// let backendAPIToken = "Token " + localStorage.getItem("token")
-            ////
-            //// fetch(backendUrl + "/suggestions", {
-            ////     method: 'POST',
-            ////     headers: {
-            ////         'content-Type': 'application/json',
-            ////         'Authorization': backendAPIToken
-            ////     },
-            ////     body: JSON.stringify({'values':values,'isUpdate':"true"})
-            //// }).catch(err => console.error(err))
+            let values =[this.state.uuid,this.state.name,newValue]
+            let backendUrl = "/backend"
+            let backendAPIToken = "Token " + localStorage.getItem("token")
+
+            fetch(backendUrl + "/suggestions", {
+                method: 'POST',
+                headers: {
+                    'content-Type': 'application/json',
+                    'Authorization': backendAPIToken
+                },
+                body: JSON.stringify({'values':values,'isUpdate':"true"})
+            }).catch(err => console.error(err))
         }
 
     }

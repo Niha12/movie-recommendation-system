@@ -24,7 +24,7 @@ test('sign in without an account', async () =>{
 
 })
 
-// User sign up
+// User sign up with short password
 test('sign up with short password', async () =>{
   let error = ""
   try{
@@ -44,13 +44,11 @@ test('sign up', async () =>{
   } catch(err){
     error = err.message;
   }
-
-  // print(error)
-  // expect(error).toEqual("There is no user record corresponding to this identifier. The user may have been deleted.")
+  // Should produce no error
   expect(error).toEqual("")
 })
 
-// User sign up
+// User sign up when an email already exists
 test('sign up when email already exists', async () =>{
   let error = ""
   try{
@@ -58,14 +56,11 @@ test('sign up when email already exists', async () =>{
   } catch(err){
     error = err.message;
   }
-
-  // print(error)
-  // expect(error).toEqual("There is no user record corresponding to this identifier. The user may have been deleted.")
   expect(error).toEqual("The email address is already in use by another account.")
 })
 
 
-// User sign up
+// User sign in with wrong password
 test('sign in with wrong password', async () =>{
   let error = ""
   try{
@@ -77,6 +72,7 @@ test('sign in with wrong password', async () =>{
   expect(error).toEqual("The password is invalid or the user does not have a password.")
 })
 
+// User sign in
 test('sign in with right password', async () =>{
   let error = ""
   try{
@@ -84,6 +80,8 @@ test('sign in with right password', async () =>{
   } catch(err){
     error = err.message;
   }
+
+  // Should have no error
   expect(error).toEqual("")
 })
 
