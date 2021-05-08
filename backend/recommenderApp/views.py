@@ -46,7 +46,7 @@ class LogoutUserAPIView(APIView):
     queryset = get_user_model().objects.all()
 
     @staticmethod
-    def get(request, format=None):
+    def delete(request, format=None):
         # simply delete the token to force a login
         request.user.auth_token.delete()
         return Response(
@@ -86,7 +86,7 @@ class Recommendations(APIView):
 
         # If the ratings file needs to be updated
         if data["isUpdate"] == "true":
-            self.movieRecommender.update_model(data["values"])
+            self.movieRecommender.update_dataset(data["values"])
             return Response("Updated")
         else:
             # Get a list of IDs as recommendations
@@ -108,8 +108,8 @@ class Recommendations(APIView):
             unique_results = set(filtered_results)
             new_list = []
 
-            # If there are more than 40 movies, only picks the first 40 to sent to frontend
-            if len(unique_results) > 40:
+            # If there are more than 25 movies, only picks the first 25 to sent to frontend
+            if len(unique_results) > 25:
                 for i, val in enumerate(itertools.islice(unique_results, 40)):
                     new_list.append(val)
             else:

@@ -36,9 +36,22 @@ export default class Settings extends Component {
 		if(currentPass !== ""){
 			if (newPass === newPass1) {
 				// Updates the password
+				let backendAPIToken = "Token " + localStorage.getItem("token")
 				await this.state.user.reauthenticateWithCredential(emailCred)
 					.then(() => {
-						return this.state.user.updatePassword(newPass)
+						fetch('/backend/auth/changepassword/', {
+							method: 'PATCH',
+							headers: {
+							  	'Content-Type': 'application/json',
+								'Authorization': backendAPIToken
+							},
+							body: JSON.stringify({
+											  "old_password": currentPass,
+											  "new_password": newPass
+										  })
+						  })
+							.then(() => { return this.state.user.updatePassword(newPass)})
+
 					}).catch(e => {
 						console.log(e)
 						if(e.code === "auth/wrong-password"){
@@ -170,8 +183,20 @@ export default class Settings extends Component {
 	async deleteAccount() {
     	if (window.confirm('Are you sure you want to delete your account?')) {
 			await this.docRef.delete()
+			await deleteUser()
 			try{
-				await deleteUser();
+				let backendAPIToken = "Token " + localStorage.getItem("token")
+				await fetch('/backend/auth/logout/', {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': backendAPIToken
+					},
+					body: JSON.stringify({
+						"username": this.state.email,
+						"password": this.state.password
+					})
+				})
 
 			}catch(err){
 				this.setState({error:err.message})

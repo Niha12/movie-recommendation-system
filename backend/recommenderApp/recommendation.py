@@ -52,8 +52,12 @@ class MovieRecommendations:
 
         return results, checkIds
 
-    # This is called if 'isUpdate' is set to true. It adds the rating to the ratings csv file
-    def update_model(self, data):
+    # This is called if 'isUpdate' is set to true.
+    # It adds the rating to the ratings csv file
+    def update_dataset(self, data):
         movieId = self.get_movie_index(data[1])
         with open(self.path_ratings_src, 'a') as fd:
-            fd.write(str(data[0] + 'A') + ',' + str(movieId) + ',' + str(data[2]) + ',' + str(time()) + '\n')
+            fd.write(str(data[0] + 'A') + ','
+                     + str(movieId) + ','
+                     + str(data[2]) + ','
+                     + str(time()) + '\n')

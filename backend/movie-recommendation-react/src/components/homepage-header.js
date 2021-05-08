@@ -15,7 +15,7 @@ function HomePageHeader() {
             <div>
               {auth().currentUser ?
                   <div className="navbar-nav">
-                    <Nav.Link href="/profile">Profile</Nav.Link>
+                    <Nav.Link href="/profile/settings">Profile</Nav.Link>
                     <button className="btn btn-primary" onClick={() => auth().signOut()}>Logout</button>
                   </div>
                   :

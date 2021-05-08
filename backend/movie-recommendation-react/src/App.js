@@ -20,8 +20,11 @@ import RatingCharts from "./pages/ratingcharts";
 import MoviesRated from "./pages/ratedmovies";
 import CastMovies from "./pages/castmovies";
 import FriendsPage from "./pages/friendspage";
+import ReactDOM from "react-dom";
+import Footer from "./components/footer";
 
-function PrivateRoute({ component: Component, authenticated, ...rest }) {
+function PrivateRoute({ component: Component, authenticated, ...rest}) {
+
   return (
     <Route
       {...rest}
@@ -67,28 +70,32 @@ class App extends Component {
         });
       }
     })
+
   }
 
   render() {
     return this.state.loading === true ? <h2>Loading...</h2> : (
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Home}/>
-          <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
-          <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
-          <PublicRoute path="/forgotpassword" authenticated={this.state.authenticated} component={ForgotPassword}/>
-          <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
-          <PrivateRoute path="/profile/settings" authenticated={this.state.authenticated} component={Settings}/>
-          <PrivateRoute path="/profile/friends" authenticated={this.state.authenticated} component={FriendsPage}/>
-          <PrivateRoute path="/profile/ratings" authenticated={this.state.authenticated} component={RatingCharts}/>
-          <PrivateRoute path="/movie_details" authenticated={this.state.authenticated} component={MovieDetails}/>
-          <PrivateRoute path="/cast" authenticated={this.state.authenticated} component={CastMovies}/>
-          <PrivateRoute path="/recommendations" authenticated={this.state.authenticated} component={Recommendations}/>
-          <PrivateRoute path="/watchlater" authenticated={this.state.authenticated} component={WatchLater}/>
-          <PrivateRoute path="/ratedmovies" authenticated={this.state.authenticated} component={MoviesRated}/>
-          <PrivateRoute path="/genres" authenticated={this.state.authenticated} component={Genres}/>
-        </Switch>
-      </Router>
+        <div>
+          <Router>
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup}/>
+              <PublicRoute path="/login" authenticated={this.state.authenticated} component={Login}/>
+              <PublicRoute path="/forgotpassword" authenticated={this.state.authenticated} component={ForgotPassword}/>
+              <PrivateRoute path="/main" authenticated={this.state.authenticated} component={Main}/>
+              <PrivateRoute path="/profile/settings" authenticated={this.state.authenticated} component={Settings}/>
+              <PrivateRoute path="/profile/friends" authenticated={this.state.authenticated} component={FriendsPage}/>
+              <PrivateRoute path="/profile/ratings" authenticated={this.state.authenticated} component={RatingCharts}/>
+              <PrivateRoute path="/movie_details" authenticated={this.state.authenticated} component={MovieDetails}/>
+              <PrivateRoute path="/cast" authenticated={this.state.authenticated} component={CastMovies}/>
+              <PrivateRoute path="/recommendations" authenticated={this.state.authenticated} component={Recommendations}/>
+              <PrivateRoute path="/watchlater" authenticated={this.state.authenticated} component={WatchLater}/>
+              <PrivateRoute path="/ratedmovies" authenticated={this.state.authenticated} component={MoviesRated}/>
+              <PrivateRoute path="/genres" authenticated={this.state.authenticated} component={Genres}/>
+            </Switch>
+          </Router>
+          <Footer/>
+        </div>
     );
   }
 }

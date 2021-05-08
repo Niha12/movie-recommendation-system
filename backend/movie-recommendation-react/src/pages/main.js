@@ -58,7 +58,8 @@ export default class Main extends Component {
 
     // Gets the popular movies from API
     getPopularMovies = () => {
-        fetch('https://api.themoviedb.org/3/movie/popular?api_key='+this.apiKey+'&language=en-US&page=1')
+        fetch('https://api.themoviedb.org/3/movie/popular?api_key='
+            +this.apiKey+'&language=en-US&page=1')
             .then(data => data.json())
             .then(data =>
             {
