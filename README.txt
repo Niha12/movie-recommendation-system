@@ -8,7 +8,6 @@ To set up this project, clone the project into your local directory. (Assuming y
 
 ### To set up Django
 1. Create a virtual environment.
-
 ```bash
  pipenv shell
 ```
