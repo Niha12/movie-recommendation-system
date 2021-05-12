@@ -63,19 +63,22 @@ export default class SimpleRating extends Component {
 
             // This code can be used to add the user rating into the rating.csv file
             // so that a new model can be generated with more user information in the future
+            // To get this working, you need to save the ratings.csv file from Movielens into
+            // the ml-25 directory. It was too large to be put on GitHub
 
-            let values =[this.state.uuid,this.state.name,newValue]
-            let backendUrl = "/backend"
-            let backendAPIToken = "Token " + localStorage.getItem("token")
 
-            fetch(backendUrl + "/suggestions", {
-                method: 'POST',
-                headers: {
-                    'content-Type': 'application/json',
-                    'Authorization': backendAPIToken
-                },
-                body: JSON.stringify({'values':values,'isUpdate':"true"})
-            }).catch(err => console.error(err))
+            // // let values =[this.state.uuid,this.state.name,newValue]
+            // // let backendUrl = "/backend"
+            // // let backendAPIToken = "Token " + localStorage.getItem("token")
+            // //
+            // // fetch(backendUrl + "/suggestions", {
+            // //    method: 'POST',
+            // //    headers: {
+            // //        'content-Type': 'application/json',
+            // //        'Authorization': backendAPIToken
+            // //    },
+            // //    body: JSON.stringify({'values':values,'isUpdate':"true"})
+            // // }).catch(err => console.error(err))
         }
 
     }

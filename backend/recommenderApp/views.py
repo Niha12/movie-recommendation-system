@@ -110,7 +110,7 @@ class Recommendations(APIView):
 
             # If there are more than 25 movies, only picks the first 25 to sent to frontend
             if len(unique_results) > 25:
-                for i, val in enumerate(itertools.islice(unique_results, 40)):
+                for i, val in enumerate(itertools.islice(unique_results, 25)):
                     new_list.append(val)
             else:
                 new_list = list(unique_results)
