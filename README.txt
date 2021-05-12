@@ -1,4 +1,4 @@
-#Movie Rec
+# Movie Rec
 Movie recommendation website created using Django and React
 
 ## Installation
