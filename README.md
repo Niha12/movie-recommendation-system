@@ -43,7 +43,7 @@ To generate recommendations, the website needs a model. This can be found in the
 
 ### Run Website
 
-After carrying out all the above requirements, you can run the server using the command:
+After carrying out all the above steps, you can run the server using the command:
 ```bash
  pip manage.py runserver
 ```
