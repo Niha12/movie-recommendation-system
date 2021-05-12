@@ -38,7 +38,7 @@ REACT_APP_FIREBASE_APP_ID=ADD_YOUR_API_FIREBASE_ID
 ```
 
 ### To generate recommendations with the model
-To generate recommendations, the website needs a model. This can be found in the ..\backend\ml-25m folder and should be called knnModel. You must first unzip this file into the same ml-25 folder.
+To generate recommendations, the website needs a model. This can be found in the ..\backend\ml-25m folder and should be called knnModel. You must first unzip this file into the same ml-25m folder.
 
 
 ### Run Website
