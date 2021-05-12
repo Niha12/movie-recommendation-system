@@ -2,7 +2,7 @@
 Movie recommendation website created using Django and React
 
 ## Installation
-To set up this project, clone the project into your local directory. (Assuming you have Django and React installed):
+To set up this project, clone the project into your local directory. (Assuming you have Django and React installed) :
 
 
 ### To set up Django
