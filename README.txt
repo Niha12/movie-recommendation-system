@@ -1,5 +1,6 @@
 # Movie Rec
 
+<h1>HELLO</h1>
 Movie recommendation website created using Django and React
 
 ## Installation
