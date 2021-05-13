@@ -1,5 +1,5 @@
 # Movie Rec
-Movie recommendation website created using Django and React
+Movie recommendation website created using Django and React. The root of this project is the folder '...\backend'. (This should've been called 'MovieRec' but when starting the project, I was following a tutorial which created this first backend folder. I couldn't change this after since the routing was done with it.)
 
 ## Installation
 To set up this project, clone the project into your local directory. (Assuming you have Django and React installed) :
