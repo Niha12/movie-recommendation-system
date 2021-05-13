@@ -13,9 +13,6 @@ urlpatterns = [
     url(r'^backend/auth/logout/$',
         LogoutUserAPIView.as_view(),
         name='auth_user_logout'),
-    # url(r'^backend/auth/changepassword/$',
-    #     UserChangePassword.as_view(),
-    #     name='auth_user_changepassword'),
 
     url('backend/suggestions', Recommendations.as_view(), name="recommendations"),
 
