@@ -139,8 +139,6 @@ button.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
     height: 350px;
     width: 250px;
     margin-right: 5px;
-    /*added this*/
-    /*box-shadow: 0 10px 20px rgba(0,0,0,0,19), 0 6px 6px rgba(0,0,0,0,23);*/
 }
 
 .movie-card .image img{
@@ -168,13 +166,6 @@ button.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
 .movie-card:hover .details {
     transform: perspective(2000px) rotateY(0deg);
 }
-/*.movie-card .movie-list{*/
-/*    height:100%;*/
-/*    width: 100%;*/
-/*}*/
-/*.row::after {*/
-/*    margin-bottom: 20px;*/
-/*}*/
 
 .movie-card .details .center {
     padding: 20px;
@@ -369,18 +360,7 @@ button.rec-dot:hover, button.rec-dot:active, button.rec-dot:focus  {
 .tag:hover {
   background: #888686;
 }
-/*.column {*/
-/*  float: left;*/
-/*  padding: 30px;*/
-/*}*/
 
-/*.left, .right {*/
-/*  width: 25%;*/
-/*}*/
-
-/*.middle {*/
-/*  width: 25%;*/
-/*}*/
 .column1 {
 
   padding-left: 50px;
